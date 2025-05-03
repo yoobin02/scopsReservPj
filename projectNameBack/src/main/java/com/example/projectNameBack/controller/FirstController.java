@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FirstController {
     @GetMapping("/main")
     public String main(){
-        return  "this is backend~~~!! 받아라 받았냐";
+        return  "this is backend~~~!! 받아라 받았냐 받았지롱";
     }
 }
