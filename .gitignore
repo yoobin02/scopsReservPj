@@ -1,0 +1,14 @@
+# Node modules
+/projectNameFront/node_modules
+/projectNameFront/build
+
+# Spring Boot build
+/projectNameBack/target
+/projectNameBack/.gradle
+
+# OS, IDE, 환경변수
+.DS_Store
+*.log
+*.env
+*.iml
+.idea/
