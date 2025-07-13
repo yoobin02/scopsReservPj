@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/gogo")
+@RequestMapping("/api")
 public class FirstController {
-    @GetMapping("/main")
+    @GetMapping("/login")
     public String main(){
-        return  "this is backend~~~!! 받아라 받았냐 받았지롱 받아봐 rr";
+        return  "this is backend~~~!!";
     }
 }
