@@ -15,10 +15,18 @@ function LoginPage() {
   }, []);
 
   const handleLogin = () => {
-    console.log('학번:', studentId);
-    console.log('비밀번호:', password);
-    // TODO: 로그인 요청 처리
-  };
+  axios.post('http://localhost:8080/api/scops/login', {
+    studentId: studentId,
+    password: password,
+  })
+  .then(response => {
+    console.log('로그인 성공:', response.data);
+  })
+  .catch(error => {
+    console.error('로그인 실패:', error);
+  });
+};
+
 
   return (
     <div className="phone-frame">
