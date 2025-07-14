@@ -8,13 +8,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [studentId, setStudentId] = useState(''); 
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/scops/main')
-      .then(response => setMessage(response.data))
-      .catch(error => console.error(error));
-  }, []);
+  
 
   const handleLogin = () => {
   axios.post('http://localhost:8080/api/scops/login', {
