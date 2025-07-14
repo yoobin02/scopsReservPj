@@ -1,9 +1,11 @@
 import './LoginPage.css';
 
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [studentId, setStudentId] = useState(''); 
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -21,12 +23,12 @@ function LoginPage() {
   })
   .then(response => {
     console.log('로그인 성공:', response.data);
+    navigate('/mainPage');
   })
   .catch(error => {
     console.error('로그인 실패:', error);
   });
 };
-
 
   return (
     <div className="phone-frame">
