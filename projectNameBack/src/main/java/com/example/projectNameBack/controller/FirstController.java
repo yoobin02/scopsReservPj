@@ -19,7 +19,7 @@ public class FirstController {
 
     @GetMapping("/login")
     public String main(){
-        return " ";
+        return "";
     }
 
     @PostMapping("/scops/login")
