@@ -2,6 +2,7 @@ package com.example.projectNameBack.controller;
 
 import com.example.projectNameBack.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,13 +18,8 @@ public class FirstController {
         this.authService = authService;
     }
 
-    @GetMapping("/login")
-    public String main(){
-        return "";
-    }
-
     @PostMapping("/scops/login")
-    public boolean login(){
-        return authService.isLogin();
+    public ResponseEntity<Boolean> login(){
+        return ResponseEntity.ok(authService.isLogin());
     }
 }
