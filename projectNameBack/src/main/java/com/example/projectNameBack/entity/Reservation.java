@@ -21,4 +21,12 @@ public class Reservation {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String eventName;
+
+    public Reservation(String user, String songName, LocalDateTime startTime, LocalDateTime endTime, String eventName) {
+        this.user = user;
+        this.songName = songName;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.eventName = eventName;
+    }
 }
