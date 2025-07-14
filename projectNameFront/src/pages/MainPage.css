@@ -121,5 +121,12 @@
   justify-self: center; /* 가운데 정렬 */
   font-size: 30px;
 }
-
-
+.main-container-songname{
+  font-size: 30px;
+}
+.main-container-songtime{
+  font-size: 12px;
+}
+.main-container-songperson{
+  font-size: 12px;
+}

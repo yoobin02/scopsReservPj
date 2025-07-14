@@ -73,7 +73,7 @@ function MainPage() {
             <div className='main-container-time-date'>{date}</div><div className='main-container-time-dayofweek'>{dayOfWeek}</div>
           </div>
           {songs.length === 0 ? (
-        <p>예약된 곡이 없습니다.</p>
+        <p>예정된 합주가 없습니다.</p>
       ) : (
         songs.map(song => (
           <div key={song.id} className='main-container-song'>
