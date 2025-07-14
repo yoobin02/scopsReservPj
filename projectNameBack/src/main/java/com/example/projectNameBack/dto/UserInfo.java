@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class UserInfo {
     private String userName;
-    private String userSong;
+    private String session;
+    private String role;
+    private int userYear;
 
 }
