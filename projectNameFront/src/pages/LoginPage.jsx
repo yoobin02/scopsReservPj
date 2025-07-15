@@ -17,7 +17,7 @@ function LoginPage() {
   })
   .then(response => {
     console.log('로그인 성공:', response.data);
-    navigate('/mainPage');
+    navigate('/scops/main');
   })
   .catch(error => {
     console.error('로그인 실패:', error);
