@@ -63,7 +63,6 @@ function MainPage() {
     <div className="phone-frame">
       <div className="App"> 
         <Headers onMenuClick={toggleMenu} username="김유빈" isOpen={menuOpen} onClose={closeMenu}></Headers>
-
         <div className='main-container'>
           <div className='main-container-time'>
             <div className='main-container-time-date'>{date}</div><div className='main-container-time-dayofweek'>{dayOfWeek}</div>
