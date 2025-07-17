@@ -11,17 +11,19 @@ function LoginPage() {
   
 
   const handleLogin = () => {
-  axios.post('http://localhost:8080/api/scops/login', {
-    studentId: studentId,
-    password: password,
-  })
-  .then(response => {
-    console.log('로그인 성공:', response.data);
-    navigate('/scops/main');
-  })
-  .catch(error => {
-    console.error('로그인 실패:', error);
-  });
+  // axios.post('http://localhost:8080/api/scops/login', {
+  //   studentId: studentId,
+  //   password: password,
+  // })
+  // .then(response => {
+  //   console.log('로그인 성공:', response.data);
+  //   navigate('/scops/main');
+  // })
+  // .catch(error => {
+  //   console.error('로그인 실패:', error);
+  // });
+
+  navigate('/scops/main');
 };
 
   return (
