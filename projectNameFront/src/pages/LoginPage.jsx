@@ -31,9 +31,9 @@ function LoginPage() {
       <div className="App"> 
         <div className="login-container">
           <div className="logo-box">
-            <h4>로고</h4>
+            <img src={`/images/scopsLogo.png`}></img>
           </div>
-          <p className="slogan">스콥스 슬로건</p>
+          <p className="slogan">SCOPS</p>
           <input
             type="text"
             placeholder="학번"
@@ -50,7 +50,7 @@ function LoginPage() {
           />
           <p className="register-link">신규 부원 등록</p>
           <button onClick={handleLogin} className="login-button">
-            로그인
+            <span style={{color: '#876400'}}>LOGIN</span>
           </button>
         </div>
       </div>

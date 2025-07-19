@@ -15,8 +15,8 @@ function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
         <div className="menuButton" onClick={onMenuClick}>
           &#9776;
         </div>
-        <div className="logo-box2">
-          <h4>로고</h4>
+        <div>
+          <img className='logo-box2' src={`/images/scopsLogo.png`}></img>
         </div>
         <div className="username">
           <span>안녕하세요, <br />{username}님</span>

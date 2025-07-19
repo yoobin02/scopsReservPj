@@ -8,9 +8,10 @@
 }
 
 .menuButton {
-  font-size: 24px;
+  font-size: 50px;
   cursor: pointer;
   margin-right: auto; /* 왼쪽 정렬 */
+  color: #FFEEBB;
 }
 .side-menu {
   position: absolute;
@@ -43,19 +44,16 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: #ddd;
-  width: 100px;
-  height: 40px;
+  width: 70px;
+  height: auto;  /* 비율 유지 */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  border-radius: 4px;
+  bottom: 10px;
 }
 
 .username {
   font-size: 14px;
-  font-weight: bold;
+  font-family: 'suit-EL';
+  color: #FFCB2E;
 }
 .sidefont{
     font-weight: bold;
