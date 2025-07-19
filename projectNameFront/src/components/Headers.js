@@ -36,8 +36,8 @@ function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/main')}>홈</li>
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/reservation')}>예약</li>
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/songRegister')}>곡 등록</li>
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/calendar')}>캘린더</li>
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/timetable')}>시간표</li>
+          <li className='menu-list-li' onClick={() => handleNavigation('/scops/calender')}>캘린더</li>
+          <li className='menu-list-li' onClick={() => handleNavigation('/scops/timeTable')}>시간표</li>
         </ul>
       </div>
     </>
