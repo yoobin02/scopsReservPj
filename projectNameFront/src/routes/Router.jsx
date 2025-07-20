@@ -6,7 +6,7 @@ import SongRegisterPage from '../pages/SongRegisterPage';
 import CalenderPage from '../pages/CalenderPage';
 import TimeTablePage from '../pages/TimeTablePage';
 import SongAddPage from '../pages/SongAddpage';
-
+import RegisterPage from '../pages/RegisterPage';
 
 function Router() {
   return (
@@ -19,6 +19,7 @@ function Router() {
         <Route path="/scops/calender" element={<CalenderPage />} />
         <Route path="/scops/timeTable" element={<TimeTablePage />} />
         <Route path="/scops/songAdd" element={<SongAddPage />} />
+        <Route path="/scops/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );
