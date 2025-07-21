@@ -1,9 +1,9 @@
-import './RegisterPage.css';
+import './UserRegisterPage.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
-const RegisterPage = () => {
+const UserRegisterPage = () => {
   const [form, setForm] = useState({
     name: "",
     section: "",
@@ -111,4 +111,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default UserRegisterPage;
