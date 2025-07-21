@@ -19,37 +19,44 @@ function SongRegisterPage() {
   const toggleMenu = () => setMenuOpen(prev => !prev);
   const closeMenu = () => setMenuOpen(false);
 
-  // 행사 목록 최초 로드
+  // 행사 목록 최초 로드 + location.state.eventName 반영
   useEffect(() => {
     axios.get('http://localhost:8080/api/songs/events')
       .then(res => {
-        setEventNameData(res.data);
-        console(res.data);
-        if (res.data.length > 0) {
-          setSelectedEvent(res.data[0]);
+        const fetchedEvents = res.data;
+        console.log('행사명 목록:', fetchedEvents);
+
+        const incomingEvent = location.state?.eventName;
+
+        // location.state.eventName이 목록에 없으면 추가
+        const mergedEvents = incomingEvent && !fetchedEvents.includes(incomingEvent)
+          ? [...fetchedEvents, incomingEvent]
+          : fetchedEvents;
+
+        setEventNameData(mergedEvents);
+
+        // selectedEvent 설정: location.state.eventName 우선, 없으면 목록 첫번째
+        if (incomingEvent) {
+          setSelectedEvent(incomingEvent);
+        } else if (mergedEvents.length > 0) {
+          setSelectedEvent(mergedEvents[0]);
         }
       })
       .catch(err => console.error('행사명 불러오기 실패:', err));
-  }, []);
-
-  // location.state.eventName이 있으면 selectedEvent 업데이트
-  useEffect(() => {
-    if (location.state && location.state.eventName) {
-      const newEventName = location.state.eventName;
-      setSelectedEvent(newEventName);
-
-      // 만약 새 행사명이 목록에 없으면 추가
-      setEventNameData(prev => prev.includes(newEventName) ? prev : [...prev, newEventName]);
-    }
   }, [location.state]);
 
   // selectedEvent가 바뀌면 해당 행사곡 리스트 로드
   useEffect(() => {
-    if (selectedEvent) {
-      axios.get(`http://localhost:8080/api/songs/by-event?eventName=${selectedEvent}`)
-        .then(res => setSongs(res.data))
-        .catch(err => console.error('곡 목록 불러오기 실패:', err));
-    }
+    if (!selectedEvent) return;
+
+    axios.get(`http://localhost:8080/api/songs/by-event?eventName=${encodeURIComponent(selectedEvent)}`)
+      .then(res => {
+        setSongs(res.data);
+      })
+      .catch(err => {
+        console.error('곡 목록 불러오기 실패:', err);
+        setSongs([]); // 에러시 빈 배열 처리
+      });
   }, [selectedEvent]);
 
   // 드롭다운 변경 시 선택 행사명 업데이트
