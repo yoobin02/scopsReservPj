@@ -1,10 +1,12 @@
 import './SongAddPage.css';
 import Headers from '../components/Headers';
 import '../components/Headers.css';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
 function SongAddPage() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [eventName, setEventName] = useState('');
   const [songName, setSongName] = useState('');
@@ -36,22 +38,29 @@ function SongAddPage() {
     setSessions(updated);
   };
   const handleSubmit = async () => {
-    const payload = {
-      eventName,
-      songName,
-      singerName,
-      sessions
-    };
+  // sessions 배열 키 이름 맞추기
+  const formattedSessions = sessions.map(s => ({
+    sessionType: s.type,
+    playerName: s.name,
+  }));
 
-    try {
-      const response = await axios.post('http://localhost:8080/api/songs', payload);
-      alert('등록 완료!');
-      console.log('서버 응답:', response.data);
-    } catch (err) {
-      alert('등록 실패!');
-      console.error('에러 발생:', err);
-    }
+  const payload = {
+    eventName,
+    songName,
+    singerName,
+    userName: "김유빈",
+    sessions: formattedSessions,
   };
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/songs', payload);
+    alert('등록 완료!');
+    navigate('/scops/songRegister', { state: { eventName: eventName } });
+  } catch (err) {
+    alert('등록 실패!');
+  }
+};
+
 
   return (
     <div className="phone-frame">
