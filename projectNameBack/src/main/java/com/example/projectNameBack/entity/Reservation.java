@@ -16,14 +16,14 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String user;
+    private String userName;
     private String songName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String eventName;
 
-    public Reservation(String user, String songName, LocalDateTime startTime, LocalDateTime endTime, String eventName) {
-        this.user = user;
+    public Reservation(String userName, String songName, LocalDateTime startTime, LocalDateTime endTime, String eventName) {
+        this.userName = userName;
         this.songName = songName;
         this.startTime = startTime;
         this.endTime = endTime;
