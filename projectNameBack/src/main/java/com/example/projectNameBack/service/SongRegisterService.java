@@ -64,4 +64,7 @@ public class SongRegisterService {
                     return dto;
                 }).collect(Collectors.toList());
     }
+    public List<String> getEventNames() {
+        return songRegisterRepository.findDistinctEventNames();
+    }
 }

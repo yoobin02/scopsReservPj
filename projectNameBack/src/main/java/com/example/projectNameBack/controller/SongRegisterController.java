@@ -34,5 +34,9 @@ public class SongRegisterController {
     public List<SongRegisterDto> getSongsByEvent(@RequestParam String eventName) {
         return songRegisterService.getSongsByEvent(eventName);
     }
+    @GetMapping("/events")
+    public List<String> getEventNames() {
+        return songRegisterService.getEventNames();
+    }
 
 }
