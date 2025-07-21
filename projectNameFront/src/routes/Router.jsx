@@ -20,6 +20,7 @@ function Router() {
         <Route path="/scops/timeTable" element={<TimeTablePage />} />
         <Route path="/scops/songAdd" element={<SongAddPage />} />
         <Route path="/scops/register" element={<UserRegisterPage />} />
+        
       </Routes>
     </BrowserRouter>
   );
