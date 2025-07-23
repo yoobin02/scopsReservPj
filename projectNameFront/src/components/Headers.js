@@ -16,7 +16,7 @@ function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
           &#9776;
         </div>
         <div>
-          <img className='logo-box2' src={`/images/scopsLogo.png`}></img>
+          <img className='logo-box2' src={`/images/scopsLogo.png`} alt='로고'></img>
         </div>
         <div className="username">
           <span>안녕하세요, <br />{username}님</span>
@@ -27,18 +27,20 @@ function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
 
       <div className={`side-menu ${isOpen ? 'open' : ''}`}>
         <button className='sideMyPageBtn' onClick={() => handleNavigation('/scops/myPage')}>MY</button>
-        <div>
+        <div className='menu-container'>
+          <div>
           <span className='sidefont'>김유빈</span>
           <span>기수</span><br />
           <span>포지션</span>
-        </div>
-        <ul className="menu-list">
+          </div>
+          <ul className="menu-list">
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/main')}>홈</li>
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/reservation')}>예약</li>
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/songRegister')}>곡 등록</li>
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/calender')}>캘린더</li>
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/timeTable')}>시간표</li>
-        </ul>
+          </ul>
+        </div>
       </div>
     </>
   );

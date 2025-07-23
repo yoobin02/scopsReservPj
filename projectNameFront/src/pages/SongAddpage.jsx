@@ -79,7 +79,7 @@ function SongAddPage() {
             <label>가수명</label>
             <input type="text" value={singerName} onChange={(e) => setSingerName(e.target.value)} placeholder="예: 김유빈" />
           </div>
-
+          
           <div className="songAdd-mainContainer-session">
             {sessions.map((session, idx) => (
               <div className="session-input" key={idx}>
