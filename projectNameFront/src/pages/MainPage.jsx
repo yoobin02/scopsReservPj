@@ -81,29 +81,28 @@ function MainPage() {
                 ))
           )}
         </div>
-        <div>
-          <div className="weekCalender-container">
-            <ul className='main-weekCalender-date'>
-                {weekInfo.map((day, index) => (
-                  <li className='main-weekCalender-date-li' key={index}>
-                    {day.date} 
-                  </li>
+        <div className="calendar-grid">
+          {weekInfo.map((day, index) => (
+            <div key={index} className="calendar-cell">
+              <div className="calendar-date">{day.date}</div>
+              <div className="calendar-day">{day.day}</div>
+
+              {/* 곡 표시: 이 날짜에 해당하는 곡 필터링 */}
+              {songs.filter(song => {
+                const songDate = new Date(song.startTime);
+                const mm = String(songDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(songDate.getDate()).padStart(2, '0');
+                  return `${mm}-${dd}` === day.date;
+                })
+              .map((song, i) => (
+                <div key={i} className="calendar-song">
+                  {song.songName}
+                </div>
               ))}
-              </ul>
-          </div>
-          <div>
-            <ul className='main-weekCalender-day'>
-                {weekInfo.map((day, index) => (
-                  <li className='main-weekCalender-day-li' key={index}>
-                    {day.day} 
-                  </li>
-              ))}
-              </ul>
-          </div>
-          <div>
-            
-          </div>
+            </div>
+          ))}
         </div>
+
     </div>
   </div>
 
