@@ -85,8 +85,8 @@ function ReservationPage() {
       singerName: singerName,
       userName: userName,
       date: selectedDate,          // 여기를 추가!
-  startTime: startTime,        // 여기를 추가!
-  endTime: endTime,  
+      startTime: startTime,        // 여기를 추가!
+      endTime: endTime,  
       sessions: [
         {
           date: selectedDate,
@@ -140,10 +140,6 @@ function ReservationPage() {
         </div>
 
         <div className="reservation-controls">
-          <h4>예약하기</h4>
-          {selectedDate && (
-            <p>선택한 날짜: <strong>{selectedDate}</strong></p>
-          )}
 
           <label>행사 선택</label>
           <select value={selectedEvent} onChange={(e) => setSelectedEvent(e.target.value)}>
@@ -163,18 +159,29 @@ function ReservationPage() {
 
           <label>연습 시간</label>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-            />
-            <span> - </span>
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-            />
-          </div>
+          <select value={startTime} onChange={(e) => setStartTime(e.target.value)}>
+            <option value="">-- 시작 시간 --</option>
+            {Array.from({ length: 48 }, (_, i) => {
+              const hour = Math.floor(i / 2).toString().padStart(2, '0');
+              const minute = (i % 2 === 0 ? '00' : '30');
+              const time = `${hour}:${minute}`;
+              return <option key={time} value={time}>{time}</option>;
+            })}
+          </select>
+
+          <span> - </span>
+
+          <select value={endTime} onChange={(e) => setEndTime(e.target.value)}>
+            <option value="">-- 종료 시간 --</option>
+            {Array.from({ length: 48 }, (_, i) => {
+              const hour = Math.floor(i / 2).toString().padStart(2, '0');
+              const minute = (i % 2 === 0 ? '00' : '30');
+              const time = `${hour}:${minute}`;
+              return <option key={time} value={time}>{time}</option>;
+            })}
+          </select>
+        </div>
+
 
           <button
             disabled={!selectedDate || !selectedEvent || !selectedSong || !startTime || !endTime}
