@@ -1,13 +1,17 @@
 package com.example.projectNameBack.service;
 
+import com.example.projectNameBack.dto.ReservationRequestDto;
 import com.example.projectNameBack.dto.SongRegisterDto;
 import com.example.projectNameBack.dto.SongSessionDto;
+import com.example.projectNameBack.entity.Reservation;
 import com.example.projectNameBack.entity.SongRegister;
 import com.example.projectNameBack.entity.SongSession;
+import com.example.projectNameBack.repository.ReservationRepository;
 import com.example.projectNameBack.repository.SongRegisterRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,9 +19,11 @@ import java.util.stream.Collectors;
 public class SongRegisterService {
 
     private final SongRegisterRepository songRegisterRepository;
+    private final ReservationRepository reservationRepository;
 
-    public SongRegisterService(SongRegisterRepository songRegisterRepository) {
+    public SongRegisterService(SongRegisterRepository songRegisterRepository, ReservationRepository reservationRepository) {
         this.songRegisterRepository = songRegisterRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Transactional
@@ -66,5 +72,29 @@ public class SongRegisterService {
     }
     public List<String> getEventNames() {
         return songRegisterRepository.findDistinctEventNames();
+    }
+    public List<SongRegister> findSongsByEventName(String eventName) {
+        return songRegisterRepository.findByEventName(eventName);
+    }
+    public List<SongRegister> findSingerNameBySongName(String songName) {
+        return songRegisterRepository.findByEventName(songName);
+    }
+    public void reserveSong(ReservationRequestDto dto) {
+        System.out.println("=== 예약 요청 DTO 확인 ===");
+        System.out.println("eventName = " + dto.getEventName());
+        System.out.println("singer = " + dto.getSingerName());
+        System.out.println("title = " + dto.getSongName());
+        System.out.println("date = " + dto.getDate());
+        System.out.println("startTime = " + dto.getStartTime());
+        System.out.println("endTime = " + dto.getEndTime());
+        Reservation reservation = new Reservation();
+        reservation.setEventName(dto.getEventName());
+        reservation.setSingerName(dto.getSingerName());
+        reservation.setSongName(dto.getSongName());
+        reservation.setDate(dto.getDate());          // 날짜는 date 필드에 설정
+        reservation.setStartTime(dto.getStartTime().withSecond(0).withNano(0));
+        reservation.setEndTime(dto.getEndTime().withSecond(0).withNano(0));
+
+        reservationRepository.save(reservation);
     }
 }
