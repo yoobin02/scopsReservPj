@@ -1,13 +1,17 @@
 package com.example.projectNameBack.controller;
 
+import com.example.projectNameBack.dto.ReservationDto;
 import com.example.projectNameBack.dto.ReservationRequestDto;
 import com.example.projectNameBack.dto.SongRegisterDto;
 import com.example.projectNameBack.entity.SongRegister;
+import com.example.projectNameBack.service.FindInfoService;
 import com.example.projectNameBack.service.SongRegisterService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -15,9 +19,11 @@ import java.util.List;
 public class SongRegisterController {
 
     private final SongRegisterService songRegisterService;
+    private final FindInfoService findInfoService;
 
-    public SongRegisterController(SongRegisterService songRegisterService) {
+    public SongRegisterController(SongRegisterService songRegisterService, FindInfoService findInfoService) {
         this.songRegisterService = songRegisterService;
+        this.findInfoService = findInfoService;
     }
 
     @PostMapping
@@ -33,24 +39,29 @@ public class SongRegisterController {
     // 이벤트 이름으로 곡 조회
     @GetMapping("/by-event")
     public List<SongRegisterDto> getSongsByEvent(@RequestParam String eventName) {
-        return songRegisterService.getSongsByEvent(eventName);
+        return findInfoService.getSongsByEvent(eventName);
     }
 
     // 등록된 이벤트 이름만 가져오기
     @GetMapping("/events")
     public List<String> getEventNames() {
-        return songRegisterService.getEventNames();
+        return findInfoService.getEventNames();
     }
 
     // 곡 예약
     @PostMapping("/reservation")
     public ResponseEntity<?> reservationSong(@RequestBody ReservationRequestDto requestDto) {
         try {
-            songRegisterService.reserveSong(requestDto);
+            findInfoService.reserveSong(requestDto);
             return ResponseEntity.ok("예약이 완료되었습니다.");
         } catch (Exception e) {
             return new ResponseEntity<>("예약 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @GetMapping("/by-date")
+    public List<ReservationDto> getSongsByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        System.out.println("getSongsByDate 호출됨, date=" + date);
+        return findInfoService.getReservationsByDate(date);
     }
 
 }

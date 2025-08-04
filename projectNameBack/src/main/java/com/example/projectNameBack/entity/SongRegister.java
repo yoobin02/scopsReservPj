@@ -3,6 +3,7 @@ package com.example.projectNameBack.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ public class SongRegister {
     private String eventName;
     private String songName;
     private String singerName;
+    private LocalDate date;
 
     @OneToMany(mappedBy = "songRegister", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SongSession> sessions = new ArrayList<>();

@@ -22,7 +22,7 @@ public class ReservationRequestDto {
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
-
+    private Long songRegisterId;
     private String eventName;
     private List<SongSessionDto> sessions;
 
