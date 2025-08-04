@@ -78,15 +78,17 @@ function ReservationPage() {
     // 선택된 곡 객체에서 singerName 찾기
     const selectedSongObj = songList.find(song => song.songName === selectedSong);
     const singerName = selectedSongObj ? selectedSongObj.singerName : '';
+    const songRegisterId = selectedSongObj ? selectedSongObj.id : null;
 
     const requestBody = {
       eventName: selectedEvent,
       songName: selectedSong,
       singerName: singerName,
       userName: userName,
-      date: selectedDate,          // 여기를 추가!
-      startTime: startTime,        // 여기를 추가!
-      endTime: endTime,  
+      date: selectedDate,
+      startTime: startTime,
+      endTime: endTime,
+      songRegisterId: songRegisterId,  
       sessions: [
         {
           date: selectedDate,

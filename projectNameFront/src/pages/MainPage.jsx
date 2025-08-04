@@ -18,34 +18,34 @@ function MainPage() {
     setMenuOpen(false);
   };
 
-  useEffect(() => {                                                                     //오늘 날짜 받아오기, 오늘 날짜 해당하는 데이터 받아오기
+  useEffect(() => {
     const now = new Date();
+    const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const day = now.getDate();
-    setDate(`${month}/${day}`);
+    const mm = String(month).padStart(2, '0');
+    const dd = String(day).padStart(2, '0');
+    const formattedDate = `${year}-${mm}-${dd}`;
 
+    // 오늘 날짜 MM/DD 형식으로 출력
+    setDate(`${mm}/${dd}`);
+
+    // 요일 설정
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     setDayOfWeek(weekdays[now.getDay()]);
 
-    // 오늘 날짜 기준으로 곡 목록 요청
-    axios.get(`http://localhost:8080/api/songs?date=${month}/${day}`)
-          .then(response => setSongs(response.data))
-          .catch(console.error);
+    // 오늘 날짜 기준 곡 목록 요청
+    axios
+      .get(`http://localhost:8080/api/songs/by-date?date=${formattedDate}`)
+      .then(response => setSongs(response.data))
+      .catch(console.error);
 
-    const dayNum = now.getDay();
-    const isWeekend = (dayNum === 0 || dayNum === 6);
-    const offsetToMonday = isWeekend ? (8 - dayNum) : (1 - dayNum);
-
-    // 이번 주 또는 다음 주 월요일 기준 날짜 객체 생성
-    const startDate = new Date(now);
-    startDate.setDate(now.getDate() + offsetToMonday);
-
+    // 주간 달력 정보 세팅
     const result = [];
     const shortWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
     for (let i = 0; i < 5; i++) {
-      const d = new Date(startDate);
-      d.setDate(startDate.getDate() + i);
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
       const mm = String(d.getMonth() + 1).padStart(2, '0');
       const dd = String(d.getDate()).padStart(2, '0');
       result.push({
@@ -54,11 +54,8 @@ function MainPage() {
       });
     }
     setWeekInfo(result);
-    }, []);
+  }, []);
 
-  
-
-  
   return (
     <div className="phone-frame">
       <div className="App"> 
@@ -74,9 +71,9 @@ function MainPage() {
           <div key={song.id} className='main-container-song'>
             <div className='main-container-songname'>{song.songName}</div>
             <div className='main-container-songtime'>
-              {new Date(song.startTime).toLocaleTimeString()} ~ {new Date(song.endTime).toLocaleTimeString()}
+              {song.startTime} ~ {song.endTime}
             </div>
-            <div className='main-container-songperson'>{song.user}</div>
+            <div className='main-container-songperson'>{song.singerName}</div>
           </div>
                 ))
           )}
@@ -89,10 +86,24 @@ function MainPage() {
 
               {/* 곡 표시: 이 날짜에 해당하는 곡 필터링 */}
               {songs.filter(song => {
-                const songDate = new Date(song.startTime);
-                const mm = String(songDate.getMonth() + 1).padStart(2, '0');
-                const dd = String(songDate.getDate()).padStart(2, '0');
-                  return `${mm}-${dd}` === day.date;
+                if (!song.date || !song.startTime) return false;
+
+                const songDate = new Date(`${song.date}T${song.startTime}`);
+
+const mm = String(songDate.getMonth() + 1).padStart(2, '0');
+const dd = String(songDate.getDate()).padStart(2, '0');
+const songDateStr = `${mm}-${dd}`;
+
+return songDateStr === day.date.trim();
+
+
+
+                // const songDate = new Date(`${song.date}T${song.startTime}`);
+                // const mm = String(songDate.getMonth() + 1).padStart(2, '0');
+                // const dd = String(songDate.getDate()).padStart(2, '0');
+                // const formatted = `${mm}-${dd}`;
+
+                  //return formatted === day.date;
                 })
               .map((song, i) => (
                 <div key={i} className="calendar-song">
