@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -21,14 +20,14 @@ public class Reservation {
     private Long id;
 
     private String eventName;
-
     private String singerName;
-
     private String songName;
 
     private LocalDate date;
-
     private LocalTime startTime;
-
     private LocalTime endTime;
+
+    @ManyToOne
+    @JoinColumn(name = "song_register_id")
+    private SongRegister songRegister;
 }
