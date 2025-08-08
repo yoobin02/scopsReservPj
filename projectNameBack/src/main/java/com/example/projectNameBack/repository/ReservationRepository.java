@@ -13,6 +13,12 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    @Query("SELECT r FROM Reservation r JOIN FETCH r.songRegister sr JOIN FETCH sr.sessions WHERE r.date = :date")
-    List<Reservation> findWithSessionsByDate(@Param("date") LocalDate date);
+    @Query("SELECT r FROM Reservation r " +
+            "JOIN FETCH r.songRegister sr " +
+            "JOIN FETCH sr.sessions " +
+            "WHERE r.date BETWEEN :start AND :end")
+    List<Reservation> findWithSessionsByDateRange(
+            @Param("start") LocalDate start,
+            @Param("end") LocalDate end);
+
 }

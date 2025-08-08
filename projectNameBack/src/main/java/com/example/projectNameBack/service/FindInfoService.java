@@ -48,9 +48,10 @@ public class FindInfoService {
                 }).collect(Collectors.toList());
     }
 
-    public List<ReservationDto> getReservationsByDate(LocalDate date) {
-        List<Reservation> reservations = reservationRepository.findWithSessionsByDate(date);
-        System.out.println("조회된 예약 수: " + reservations.size());
+    public List<ReservationDto> getReservationsByDateRange(LocalDate start, LocalDate end) {
+        List<Reservation> reservations = reservationRepository.findWithSessionsByDateRange(start, end);
+        System.out.println("조회된 예약 수(기간): " + reservations.size());
+
         return reservations.stream()
                 .map(reservation -> ReservationDto.builder()
                         .eventName(reservation.getEventName())
@@ -66,6 +67,7 @@ public class FindInfoService {
                         .build()
                 ).toList();
     }
+
 
 
     public List<String> getEventNames() {

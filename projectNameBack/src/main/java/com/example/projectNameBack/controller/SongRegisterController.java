@@ -58,10 +58,13 @@ public class SongRegisterController {
             return new ResponseEntity<>("예약 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/by-date")
-    public List<ReservationDto> getSongsByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        System.out.println("getSongsByDate 호출됨, date=" + date);
-        return findInfoService.getReservationsByDate(date);
+    @GetMapping("/by-week")
+    public List<ReservationDto> getSongsByWeek(
+            @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        System.out.println("getSongsByWeek 호출됨, start=" + start + ", end=" + end);
+        return findInfoService.getReservationsByDateRange(start, end);
     }
+
 
 }
