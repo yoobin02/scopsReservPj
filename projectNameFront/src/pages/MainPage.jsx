@@ -1,6 +1,6 @@
 import './MainPage.css';
 import Headers from '../components/Headers';
-import  '../components/Headers.css';
+import '../components/Headers.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,113 +10,94 @@ function MainPage() {
   const [dayOfWeek, setDayOfWeek] = useState('');
   const [songs, setSongs] = useState([]);
   const [weekInfo, setWeekInfo] = useState([]);
-  
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    const mm = String(month).padStart(2, '0');
-    const dd = String(day).padStart(2, '0');
-    const formattedDate = `${year}-${mm}-${dd}`;
-
-    // 오늘 날짜 MM/DD 형식으로 출력
-    setDate(`${mm}/${dd}`);
-
-    // 요일 설정
-    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    setDayOfWeek(weekdays[now.getDay()]);
-
-    // 오늘 날짜 기준 곡 목록 요청
-    axios
-      .get(`http://localhost:8080/api/songs/by-date?date=${formattedDate}`)
-      .then(response => setSongs(response.data))
-      .catch(console.error);
-
-    // 주간 달력 정보 세팅
-    const result = [];
     const shortWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // 이번 주 평일(오늘 포함 5일) 날짜 계산
+    const result = [];
     for (let i = 0; i < 5; i++) {
       const d = new Date(now);
       d.setDate(now.getDate() + i);
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
       result.push({
-        date: `${mm}-${dd}`,
+        fullDate: d.toISOString().slice(0, 10), // yyyy-mm-dd
+        date: `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`, // MM-DD
         day: shortWeekdays[d.getDay()],
       });
     }
     setWeekInfo(result);
+
+    // 오늘 날짜 MM/DD 형식
+    setDate(result[0].date.replace('-', '/'));
+    setDayOfWeek(result[0].day);
+
+    // 백엔드에 start~end 범위로 요청
+    const start = result[0].fullDate;
+    const end = result[result.length - 1].fullDate;
+
+    axios
+      .get(`http://localhost:8080/api/songs/by-week?start=${start}&end=${end}`)
+      .then(response => setSongs(response.data))
+      .catch(console.error);
   }, []);
+
+  // 오늘 곡 필터링
+  const todayFullDate = weekInfo[0]?.fullDate;
+  const todaySongs = songs.filter(song => song.date === todayFullDate);
 
   return (
     <div className="phone-frame">
-      <div className="App"> 
-        <Headers onMenuClick={toggleMenu} username="김유빈" isOpen={menuOpen} onClose={closeMenu}></Headers>
-        <div className='main-container'>
-          <div className='main-container-time'>
-            <div className='main-container-time-date'>{date}</div><div className='main-container-time-dayofweek'>{dayOfWeek}</div>
+      <div className="App">
+        <Headers
+          onMenuClick={toggleMenu}
+          username="김유빈"
+          isOpen={menuOpen}
+          onClose={closeMenu}
+        />
+        <div className="main-container">
+          <div className="main-container-time">
+            <div className="main-container-time-date">{date}</div>
+            <div className="main-container-time-dayofweek">{dayOfWeek}</div>
           </div>
-          {songs.length === 0 ? (
-        <p>예정된 합주가 없습니다.</p>
-      ) : (
-        songs.map(song => (
-          <div key={song.id} className='main-container-song'>
-            <div className='main-container-songname'>{song.songName}</div>
-            <div className='main-container-songtime'>
-              {song.startTime} ~ {song.endTime}
-            </div>
-            <div className='main-container-songperson'>{song.singerName}</div>
-          </div>
-                ))
+          {todaySongs.length === 0 ? (
+            <p>예정된 합주가 없습니다.</p>
+          ) : (
+            todaySongs.map(song => (
+              <div key={song.id} className="main-container-song">
+                <div className="main-container-songname">{song.songName}</div>
+                <div className="main-container-songtime">
+                  {song.startTime} ~ {song.endTime}
+                </div>
+                <div className="main-container-songperson">
+                  {song.singerName}
+                </div>
+              </div>
+            ))
           )}
         </div>
+
+        {/* 달력 */}
         <div className="calendar-grid">
           {weekInfo.map((day, index) => (
             <div key={index} className="calendar-cell">
               <div className="calendar-date">{day.date}</div>
               <div className="calendar-day">{day.day}</div>
-
-              {/* 곡 표시: 이 날짜에 해당하는 곡 필터링 */}
-              {songs.filter(song => {
-                if (!song.date || !song.startTime) return false;
-
-                const songDate = new Date(`${song.date}T${song.startTime}`);
-
-const mm = String(songDate.getMonth() + 1).padStart(2, '0');
-const dd = String(songDate.getDate()).padStart(2, '0');
-const songDateStr = `${mm}-${dd}`;
-
-return songDateStr === day.date.trim();
-
-
-
-                // const songDate = new Date(`${song.date}T${song.startTime}`);
-                // const mm = String(songDate.getMonth() + 1).padStart(2, '0');
-                // const dd = String(songDate.getDate()).padStart(2, '0');
-                // const formatted = `${mm}-${dd}`;
-
-                  //return formatted === day.date;
-                })
-              .map((song, i) => (
-                <div key={i} className="calendar-song">
-                  {song.songName}
-                </div>
-              ))}
+              {songs
+                .filter(song => song.date === day.fullDate)
+                .map((song, i) => (
+                  <div key={i} className="calendar-song">
+                    {song.songName}
+                  </div>
+                ))}
             </div>
           ))}
         </div>
-
+      </div>
     </div>
-  </div>
-
   );
 }
 
