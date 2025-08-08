@@ -25,38 +25,40 @@ function ReservationPage() {
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    const now = new Date();
-    const dayNum = now.getDay();
-    const isWeekend = dayNum === 0 || dayNum === 6;
-    const offsetToMonday = isWeekend ? 8 - dayNum : 1 - dayNum;
+  const now = new Date();
+  const shortWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const result = [];
 
-    const startDate = new Date(now);
-    startDate.setDate(now.getDate() + offsetToMonday);
-    const shortWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const result = [];
+  // 오늘부터 5일간 날짜 생성
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
 
-    for (let i = 0; i < 5; i++) {
-      const d = new Date(startDate);
-      d.setDate(startDate.getDate() + i);
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      const isoDate = d.toISOString().slice(0, 10); // "yyyy-MM-dd"
-      result.push({ date: isoDate, displayDate: `${mm}-${dd}`, day: shortWeekdays[d.getDay()] });
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const isoDate = d.toISOString().slice(0, 10); // yyyy-MM-dd
 
-    }
+    result.push({
+      date: isoDate,               // 데이터 비교용 (yyyy-MM-dd)
+      displayDate: `${mm}-${dd}`,  // 화면 표시용 (MM-dd)
+      day: shortWeekdays[d.getDay()]
+    });
+  }
 
-    setWeekInfo(result);
+  setWeekInfo(result);
 
-    // 곡 목록 가져오기
-    axios.get(`http://localhost:8080/api/songs/week`)
-      .then(res => setSongs(res.data))
-      .catch(err => console.error('곡 목록 실패:', err));
+  // 이번 주 모든 곡 정보 불러오기
+  axios.get(`http://localhost:8080/api/songs/week`)
+    .then(res => setSongs(res.data))
+    .catch(err => console.error('곡 목록 실패:', err));
 
-    // 행사명 리스트 가져오기
-    axios.get('http://localhost:8080/api/songs/events')
-      .then(res => setEventList(res.data))
-      .catch(err => console.error('행사명 목록 실패:', err));
-  }, []);
+  // 행사명 리스트
+  axios.get('http://localhost:8080/api/songs/events')
+    .then(res => setEventList(res.data))
+    .catch(err => console.error('행사명 목록 실패:', err));
+}, []);
+
+
 
   // 행사 선택 시 그에 맞는 곡 리스트 불러오기
   useEffect(() => {
@@ -129,14 +131,13 @@ function ReservationPage() {
               <div className="calendar-day">{day.day}</div>
               {songs
                 .filter(song => {
-                  const songDate = new Date(song.startTime);
-                  const mm = String(songDate.getMonth() + 1).padStart(2, '0');
-                  const dd = String(songDate.getDate()).padStart(2, '0');
-                  return `${mm}-${dd}` === day.date;
+                  const songDate = new Date(song.startTime).toISOString().slice(0, 10);
+                  return songDate === day.date;
                 })
                 .map((song, i) => (
                   <div key={i} className="calendar-song">{song.songName}</div>
-                ))}
+                  ))
+              }
             </div>
           ))}
         </div>
