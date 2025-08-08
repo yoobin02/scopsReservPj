@@ -83,18 +83,12 @@ function SongRegisterPage() {
           </div>
 
           <div className='songResister-mainContainer-songs'>
-            <div className="song-list-header">
-              <span>곡명</span>
-              <span>가수</span>
-              <span>세션</span>
-            </div>
-
             {songs.length > 0 ? (
               songs.map((item, idx) => (
                 <div key={idx} className="song-item">
-                  <span>{item.songName}</span>
-                  <span>{item.singerName}</span>
-                  <span>{item.sessions.map(s => s.sessionType).join(', ')}</span>
+                  <span className='song-item-subject'>{item.songName}</span>
+                  <span className='song-item-singerName'>{item.singerName}</span>
+                  <span className='song-item-playerName'>{item.sessions.map(s => s.sessionType + "." + s.playerName).join(', ')}</span>
                 </div>
               ))
             ) : (
