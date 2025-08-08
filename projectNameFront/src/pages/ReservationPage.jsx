@@ -29,34 +29,37 @@ function ReservationPage() {
   const shortWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const result = [];
 
-  // 오늘부터 5일간 날짜 생성
   for (let i = 0; i < 5; i++) {
     const d = new Date(now);
     d.setDate(now.getDate() + i);
 
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
-    const isoDate = d.toISOString().slice(0, 10); // yyyy-MM-dd
+    const isoDate = d.toISOString().slice(0, 10);
 
     result.push({
-      date: isoDate,               // 데이터 비교용 (yyyy-MM-dd)
-      displayDate: `${mm}-${dd}`,  // 화면 표시용 (MM-dd)
+      date: isoDate,
+      displayDate: `${mm}-${dd}`,
       day: shortWeekdays[d.getDay()]
     });
   }
 
   setWeekInfo(result);
 
-  // 이번 주 모든 곡 정보 불러오기
-  axios.get(`http://localhost:8080/api/songs/week`)
+  const startDate = result[0].date;               // 오늘
+  const endDate = result[result.length - 1].date; // 5일 뒤
+
+  // 이번 주 예약 정보 한 번에 가져오기
+  axios.get(`http://localhost:8080/api/songs/by-week?start=${startDate}&end=${endDate}`)
     .then(res => setSongs(res.data))
-    .catch(err => console.error('곡 목록 실패:', err));
+    .catch(err => console.error('이번 주 예약정보 실패:', err));
 
   // 행사명 리스트
   axios.get('http://localhost:8080/api/songs/events')
     .then(res => setEventList(res.data))
     .catch(err => console.error('행사명 목록 실패:', err));
 }, []);
+
 
 
 
@@ -130,13 +133,10 @@ function ReservationPage() {
               <div className="calendar-date">{day.displayDate}</div>
               <div className="calendar-day">{day.day}</div>
               {songs
-                .filter(song => {
-                  const songDate = new Date(song.startTime).toISOString().slice(0, 10);
-                  return songDate === day.date;
-                })
+                .filter(song => song.date === day.date)
                 .map((song, i) => (
                   <div key={i} className="calendar-song">{song.songName}</div>
-                  ))
+                ))
               }
             </div>
           ))}

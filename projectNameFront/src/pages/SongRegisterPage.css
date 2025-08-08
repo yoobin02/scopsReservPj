@@ -56,28 +56,19 @@
   color: #333;
 }
 
-.song-list-header,
 .song-item {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;          /* 컬럼 간 간격 */
+  grid-template-columns: 1.3fr 1fr 3fr;
+  display: grid;
+  gap: 20px;
   padding: 8px 0;
+  border-bottom: 1px solid #FFE495;
 }
 
-.song-list-header {
-  font-weight: bold;
-  border-bottom: 2px solid #f1c40f;
-  position: sticky;
-  top: 0;
-  background-color: #fff7cc;
-  z-index: 10;
-}
 .song-list-header span,
 .song-item span {
-  flex-basis: 33.3%;  /* 너비 균등 분할 */
+  
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 .songResister-btnPlus {
   position: absolute;  /* fixed → absolute */
@@ -99,4 +90,14 @@
 }
 .plus-button:hover {
   background-color: #d4ac0d;
+}
+.song-item-subject{
+  font-size: 18px;
+}
+.song-item-singerName{
+  font-size: 15px;
+}
+.song-item-playerName{
+  font-size: 10px;
+  text-overflow: ellipsis;
 }
