@@ -14,6 +14,30 @@ function MainPage() {
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
+  // 중복 곡 병합 함수
+  const mergeSongs = (songList) => {
+    const merged = songList.reduce((acc, song) => {
+      const key = `${song.songName}-${song.startTime}-${song.endTime}-${song.date}`;
+      if (!acc[key]) {
+        acc[key] = { ...song, sessions: [...song.sessions] };
+      } else {
+        acc[key].sessions.push(...song.sessions);
+      }
+      return acc;
+    }, {});
+
+    // 세션 중복 제거
+    Object.values(merged).forEach(song => {
+      song.sessions = Array.from(
+        new Map(
+          song.sessions.map(s => [`${s.sessionType}.${s.playerName}`, s])
+        ).values()
+      );
+    });
+
+    return Object.values(merged);
+  };
+
   useEffect(() => {
     const now = new Date();
     const shortWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -45,9 +69,8 @@ function MainPage() {
       .catch(console.error);
   }, []);
 
-  // 오늘 곡 필터링
   const todayFullDate = weekInfo[0]?.fullDate;
-  const todaySongs = songs.filter(song => song.date === todayFullDate);
+  const todaySongs = mergeSongs(songs.filter(song => song.date === todayFullDate));
 
   return (
     <div className="phone-frame">
@@ -63,38 +86,58 @@ function MainPage() {
             <div className="main-container-time-date">{date}</div>
             <div className="main-container-time-dayofweek">{dayOfWeek}</div>
           </div>
+          {/* 오늘 곡 목록 */}
           {todaySongs.length === 0 ? (
             <p>예정된 합주가 없습니다.</p>
           ) : (
-            todaySongs.map(song => (
-              <div key={song.id} className="main-container-song">
-                <div className="main-container-songname">{song.songName}</div>
+            todaySongs.map((song, index) => (
+              <div
+                key={song.id ?? `${song.songName}-${song.date}-${index}`}
+                className="main-container-song"
+              >
+                <div className="main-container-songname">
+                  <span className='main-container-songname-style'>{song.songName}{' '}</span>
+                  <span style={{ fontSize: '10px', color: "#876400"}}>{song.singerName}</span>
+                </div>
                 <div className="main-container-songtime">
-                  {song.startTime} ~ {song.endTime}
+                  {`${song.startTime.slice(0,5)} - ${song.endTime.slice(0,5)}`}
                 </div>
                 <div className="main-container-songperson">
-                  {song.singerName}
+                  {song.sessions.map(s => (
+                    <span key={s.sessionType + s.playerName} style={{ marginRight: '20px' }}>
+                      {`${s.sessionType}.${s.playerName}`}
+                    </span>
+                  ))}
                 </div>
+
               </div>
             ))
           )}
         </div>
 
         {/* 달력 */}
-        <div className="calendar-grid">
-          {weekInfo.map((day, index) => (
-            <div key={index} className="calendar-cell">
-              <div className="calendar-date">{day.date}</div>
-              <div className="calendar-day">{day.day}</div>
-              {songs
-                .filter(song => song.date === day.fullDate)
-                .map((song, i) => (
-                  <div key={i} className="calendar-song">
-                    {song.songName}
-                  </div>
-                ))}
-            </div>
-          ))}
+        <div className="calendar-grid-container">
+          <div className="calendar-grid">
+            {weekInfo.map((day, dayIndex) => {
+              const daySongs = mergeSongs(
+                songs.filter(song => song.date === day.fullDate)
+              );
+              return (
+                <div key={`${day.fullDate}-${dayIndex}`} className="calendar-cell">
+                  <div className="calendar-day">{day.day}</div>
+                  <div className="calendar-date">{day.date}</div>
+                  {daySongs.map((song, songIndex) => (
+                    <div
+                      key={song.id ?? `${song.songName}-${song.date}-${songIndex}`}
+                      className="calendar-song"
+                    >
+                      {`＊${song.startTime.split(':')[0]}시 `}<span style={{color: "#EAB211"}}> {song.songName}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
