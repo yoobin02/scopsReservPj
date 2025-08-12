@@ -123,23 +123,25 @@ function ReservationPage() {
       <div className="App">
         <Headers onMenuClick={toggleMenu} username={userName} isOpen={menuOpen} onClose={closeMenu} />
 
-        <div className="calendar-grid">
+        <div className='reservation-calendar-grid-container'>
+          <div className="reservation-calendar-grid">
           {weekInfo.map((day, index) => (
             <div
               key={index}
-              className={`calendar-cell ${selectedDate === day.date ? 'selected' : ''}`}
+              className={`reservation-calendar-cell ${selectedDate === day.date ? 'selected' : ''}`}
               onClick={() => setSelectedDate(day.date)}
             >
-              <div className="calendar-date">{day.displayDate}</div>
-              <div className="calendar-day">{day.day}</div>
+              <div className="reservation-calendar-date">{day.displayDate}</div>
+              <div className="reservation-calendar-day">{day.day}</div>
               {songs
                 .filter(song => song.date === day.date)
                 .map((song, i) => (
-                  <div key={i} className="calendar-song">{song.songName}</div>
+                  <div key={i} className="reservation-calendar-song">{song.songName}</div>
                 ))
               }
             </div>
           ))}
+        </div>
         </div>
 
         <div className="reservation-controls">

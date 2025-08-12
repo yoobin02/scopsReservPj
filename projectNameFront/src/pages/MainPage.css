@@ -16,8 +16,6 @@
 }
 
 .main-container {
-  margin-top: 40px;
-  background-color: #FFEEBB; /* 연한 노랑 */
   border: none;              /* 테두리 없음 */
   border-radius: 40px;
   padding: 16px;             /* 안쪽 여백 */
@@ -27,17 +25,20 @@
 }
 
 .main-container-time {
+  margin-bottom: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
   width: 100%;
 }
 
 /* 날짜는 왼쪽 칸에 위치 */
 .main-container-time-date {
+  border: 1px solid #FFFFFF;        /* 테두리 */
+  border-radius: 30px;            /* 모서리 둥글게 */
+  box-shadow: 0 0 10px rgba(255, 230, 130, 0.9);
   font-family: 'suit-regular';
   color: #876400;
-  grid-column: 1 / 2;
   justify-self: start;  /* 왼쪽 정렬 */
   padding: 5px;
   font-size: 30px;
@@ -45,54 +46,101 @@
 
 /* 요일은 가운데 칸에 위치 */
 .main-container-time-dayofweek {
+  border: 1px solid #FFFFFF;        /* 테두리 */
+  border-radius: 30px;            /* 모서리 둥글게 */
+  box-shadow: 0 0 10px rgba(255, 230, 130, 0.9);
   font-family: 'suit-L';
   color: #876400;
-  grid-column: 2 / 3;
-  justify-self: center; /* 가운데 정렬 */
+  margin-right: 8px;
+  justify-self: end; /* 가운데 정렬 */
   font-size: 30px;
 }
 .main-container-songname{
   font-size: 30px;
 }
+.main-container-songname-style{
+  font-family: 'suit-regular';
+  margin-right: 5px;
+  border-radius: 50px;
+  background-color: rgba(255, 238, 187, 0.9);
+  box-shadow: 0 0 5px rgba(255, 230, 130, 0.9);
+  color: #634900;
+  padding: 0;
+}
 .main-container-songtime{
+  font-family: 'suit-regular';
+  margin-top: 5px;
+  color: #876400;
   font-size: 12px;
 }
 .main-container-songperson{
+  font-family: 'suit-regular';
+  margin-bottom: 5px;
+  color: #EAB211;
   font-size: 12px;
 }
 
+.calendar-grid-container{
+  margin-top: 10px;
+  border: 1px solid #FFFFFF;        /* 테두리 */
+  border-radius: 30px;            /* 모서리 둥글게 */
+  box-shadow: 0 0 15px rgba(255, 230, 130, 0.9);
+
+}
 .calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5열 */
+  min-height: 250px;
+  display: flex;              /* flex로 변경 */
   gap: 8px;
-  margin-top: 20px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 10px 10px 0 10px;
 }
 
 .calendar-cell {
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
+  position: relative;  /* 추가 */
+  background-color: #FFFFFF;
+  border: none;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 0;
   min-height: 100px;
+  flex: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-cell:not(:nth-child(5n))::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 0;
+  width: 1.5px;
+  height: calc(100% - 20px);
+  background-color: #FFEEBB;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 .calendar-date {
-  font-weight: bold;
+  font-family: 'suit-regular';
+  color: #876400;
   font-size: 14px;
+  text-align: center;
+  border: 1px solid #FFFFFF;        /* 테두리 */
+  border-radius: 30px;            /* 모서리 둥글게 */
+  box-shadow: 0 0 10px rgba(255, 230, 130, 0.9);
+  margin-bottom: 10px;
 }
 
 .calendar-day {
-  font-size: 12px;
-  color: #888;
+  font-family: 'suit-regular';
+  font-size: 20px;
+  color: #876400;
   margin-bottom: 6px;
+  text-align: center;
 }
 
 .calendar-song {
-  font-size: 13px;
-  margin: 2px 0;
-  padding: 2px 4px;
-  background-color: #dceefc;
+  font-family: 'suit-regular';
+  font-size: 7px;
+  margin-bottom: 2px;
   border-radius: 4px;
 }
