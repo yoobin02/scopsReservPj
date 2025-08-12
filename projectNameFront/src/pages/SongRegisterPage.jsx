@@ -2,22 +2,40 @@ import './SongRegisterPage.css';
 import Headers from '../components/Headers';
 import '../components/Headers.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 function SongRegisterPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   const [songs, setSongs] = useState([]);
   const [eventNameData, setEventNameData] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState('');
-
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // 메뉴 토글
   const toggleMenu = () => setMenuOpen(prev => !prev);
   const closeMenu = () => setMenuOpen(false);
+
+  // 외부 클릭 시 드롭다운 닫기 처리
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // 드롭다운 항목 클릭 시 선택
+  const handleSelect = (eventName) => {
+    setSelectedEvent(eventName);
+    setDropdownOpen(false);
+  };
 
   // 행사 목록 최초 로드 + location.state.eventName 반영
   useEffect(() => {
@@ -74,21 +92,51 @@ function SongRegisterPage() {
       <div className="App">
         <Headers onMenuClick={toggleMenu} username="김유빈" isOpen={menuOpen} onClose={closeMenu} />
         <div className='songResister-mainContainer'>
-          <div className='songResister-mainContainer-eventName'>
-            <select value={selectedEvent} onChange={handleChange}>
-              {eventNameData.map((eventName, idx) => (
-                <option key={idx} value={eventName}>{eventName}</option>
-              ))}
-            </select>
+          <div
+            className='songResister-mainContainer-eventName'
+            ref={dropdownRef}
+            style={{ position: 'relative' }}
+          >
+            {/* 선택된 이벤트 표시용 div */}
+            <div
+              className="custom-select-display"
+              onClick={() => setDropdownOpen(prev => !prev)}
+            >
+              {selectedEvent || '행사 선택'}
+              {/* ▼ 화살표 */}
+              <span >▼</span>
+            </div>
+
+            {/* 드롭다운 목록 */}
+            {dropdownOpen && (
+              <ul className="custom-select-list">
+                {eventNameData.map((eventName, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => handleSelect(eventName)}
+                    className="custom-select-list-item"
+                  >
+                    {eventName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
+          {/* 기존 노래 리스트 */}
           <div className='songResister-mainContainer-songs'>
             {songs.length > 0 ? (
               songs.map((item, idx) => (
                 <div key={idx} className="song-item">
                   <span className='song-item-subject'>{item.songName}</span>
                   <span className='song-item-singerName'>{item.singerName}</span>
-                  <span className='song-item-playerName'>{item.sessions.map(s => s.sessionType + "." + s.playerName).join(', ')}</span>
+                  <span className="song-item-playerName">
+                    {item.sessions.map(s => (
+                      <span key={s.sessionType + s.playerName}>
+                        {s.sessionType}.{s.playerName}
+                      </span>
+                    ))}
+                  </span>
                 </div>
               ))
             ) : (

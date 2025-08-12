@@ -1,7 +1,7 @@
 import './ReservationPage.css';
 import Headers from '../components/Headers';
 import '../components/Headers.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 function ReservationPage() {
@@ -21,8 +21,31 @@ function ReservationPage() {
   // 로그인 사용자 이름 상태 예시 (실제 로그인 연동 시 context 등에서 받아올 것)
   const [userName, setUserName] = useState('김유빈');
 
+  // 드롭다운 오픈 상태 관리용
+  const [eventDropdownOpen, setEventDropdownOpen] = useState(false);
+  const [songDropdownOpen, setSongDropdownOpen] = useState(false);
+  const [startTimeDropdownOpen, setStartTimeDropdownOpen] = useState(false);
+  const [endTimeDropdownOpen, setEndTimeDropdownOpen] = useState(false);
+
+  const eventRef = useRef(null);
+  const songRef = useRef(null);
+  const startTimeRef = useRef(null);
+  const endTimeRef = useRef(null);
+
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+
+  // 외부 클릭 시 드롭다운 닫기
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (eventRef.current && !eventRef.current.contains(e.target)) setEventDropdownOpen(false);
+      if (songRef.current && !songRef.current.contains(e.target)) setSongDropdownOpen(false);
+      if (startTimeRef.current && !startTimeRef.current.contains(e.target)) setStartTimeDropdownOpen(false);
+      if (endTimeRef.current && !endTimeRef.current.contains(e.target)) setEndTimeDropdownOpen(false);
+    }
+    window.addEventListener('mousedown', handleClickOutside);
+    return () => window.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
   const now = new Date();
@@ -59,9 +82,6 @@ function ReservationPage() {
     .then(res => setEventList(res.data))
     .catch(err => console.error('행사명 목록 실패:', err));
 }, []);
-
-
-
 
   // 행사 선택 시 그에 맞는 곡 리스트 불러오기
   useEffect(() => {
@@ -118,6 +138,12 @@ function ReservationPage() {
     }
   };
 
+  const timeOptions = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2).toString().padStart(2, '0');
+    const minute = i % 2 === 0 ? '00' : '30';
+    return `${hour}:${minute}`;
+  });
+
   return (
     <div className="phone-frame">
       <div className="App">
@@ -131,12 +157,15 @@ function ReservationPage() {
               className={`reservation-calendar-cell ${selectedDate === day.date ? 'selected' : ''}`}
               onClick={() => setSelectedDate(day.date)}
             >
-              <div className="reservation-calendar-date">{day.displayDate}</div>
-              <div className="reservation-calendar-day">{day.day}</div>
+              <div className='reservation-calendar-time'>
+                <span className="reservation-calendar-date" id='reservation-calender-date-span'>{day.displayDate}</span>
+                <span className="reservation-calendar-day">{day.day}</span>
+              </div>
+              
               {songs
                 .filter(song => song.date === day.date)
                 .map((song, i) => (
-                  <div key={i} className="reservation-calendar-song">{song.songName}</div>
+                  <div key={i} className="reservation-calendar-song">{`${song.startTime.split(':')[0]}시 `}<span style={{color: "#EAB211"}}> {song.songName}</span></div>
                 ))
               }
             </div>
@@ -145,50 +174,135 @@ function ReservationPage() {
         </div>
 
         <div className="reservation-controls">
+          <div className="custom-select-container" ref={eventRef} style={{ marginBottom: 12 }}>
+            <div
+              className={`custom-select-display ${!selectedEvent ? 'custom-select-placeholder' : ''}`}
+              onClick={() => setEventDropdownOpen(o => !o)}
+            >
+              {selectedEvent || '행사명 선택'}
+              <span className="custom-select-arrow">▼</span>
+            </div>
+            {eventDropdownOpen && (
+              <ul className="custom-select-list">
+                <li
+                  className="custom-select-list-item"
+                  onClick={() => { setSelectedEvent(''); setEventDropdownOpen(false); }}
+                >
+                  행사명 선택
+                </li>
+                {eventList.map((eventName, idx) => (
+                  <li
+                    key={idx}
+                    className="custom-select-list-item"
+                    onClick={() => { setSelectedEvent(eventName); setEventDropdownOpen(false); }}
+                  >
+                    {eventName}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-          <label>행사 선택</label>
-          <select value={selectedEvent} onChange={(e) => setSelectedEvent(e.target.value)}>
-            <option value="">-- 행사 선택 --</option>
-            {eventList.map((event, i) => (
-              <option key={i} value={event}>{event}</option>
-            ))}
-          </select>
+          <div className="custom-select-container" ref={songRef} style={{ marginBottom: 12 }}>
+            <div
+              className={`custom-select-display ${!selectedSong ? 'custom-select-placeholder' : ''}`}
+              onClick={() => setSongDropdownOpen(o => !o)}
+            >
+              {selectedSong || '내가 등록한 곡 선택'}
+              <span className="custom-select-arrow">▼</span>
+            </div>
+            {songDropdownOpen && (
+              <ul className="custom-select-list">
+                <li
+                  className="custom-select-list-item"
+                  onClick={() => { setSelectedSong(''); setSongDropdownOpen(false); }}
+                >
+                  내가 등록한 곡 선택
+                </li>
+                {songList.map((song, idx) => (
+                  <li
+                    key={idx}
+                    className="custom-select-list-item"
+                    onClick={() => { setSelectedSong(song.songName); setSongDropdownOpen(false); }}
+                  >
+                    {song.songName}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-          <label>곡 선택</label>
-          <select value={selectedSong} onChange={(e) => setSelectedSong(e.target.value)}>
-            <option value="">-- 곡 선택 --</option>
-            {songList.map((song, i) => (
-              <option key={i} value={song.songName}>{song.songName}</option>
-            ))}
-          </select>
-
-          <label>연습 시간</label>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <select value={startTime} onChange={(e) => setStartTime(e.target.value)}>
-            <option value="">-- 시작 시간 --</option>
-            {Array.from({ length: 48 }, (_, i) => {
-              const hour = Math.floor(i / 2).toString().padStart(2, '0');
-              const minute = (i % 2 === 0 ? '00' : '30');
-              const time = `${hour}:${minute}`;
-              return <option key={time} value={time}>{time}</option>;
-            })}
-          </select>
+          <div
+            className="custom-select-container"
+            ref={startTimeRef}
+            style={{ marginBottom: 12, width: 120, display: 'inline-block', marginRight: 8 }}
+          >
+            <div
+              className={`custom-select-display ${!startTime ? 'custom-select-placeholder' : ''}`}
+              onClick={() => setStartTimeDropdownOpen(o => !o)}
+            >
+              {startTime || '연습시간'}
+              <span className="custom-select-arrow">▼</span>
+            </div>
+            {startTimeDropdownOpen && (
+              <ul className="custom-select-list" style={{ maxHeight: 150 }}>
+                <li
+                  className="custom-select-list-item"
+                  onClick={() => { setStartTime(''); setStartTimeDropdownOpen(false); }}
+                >
+                  연습시간
+                </li>
+                {timeOptions.map((time, idx) => (
+                  <li
+                    key={idx}
+                    className="custom-select-list-item"
+                    onClick={() => { setStartTime(time); setStartTimeDropdownOpen(false); }}
+                  >
+                    {time}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-          <span> - </span>
+          <span style={{color: "#876400"}}> - </span>
 
-          <select value={endTime} onChange={(e) => setEndTime(e.target.value)}>
-            <option value="">-- 종료 시간 --</option>
-            {Array.from({ length: 48 }, (_, i) => {
-              const hour = Math.floor(i / 2).toString().padStart(2, '0');
-              const minute = (i % 2 === 0 ? '00' : '30');
-              const time = `${hour}:${minute}`;
-              return <option key={time} value={time}>{time}</option>;
-            })}
-          </select>
-        </div>
-
-
+          <div
+            className="custom-select-container"
+            ref={endTimeRef}
+            style={{ marginBottom: 12, width: 120, display: 'inline-block' }}
+          >
+            <div
+              className={`custom-select-display ${!endTime ? 'custom-select-placeholder' : ''}`}
+              onClick={() => setEndTimeDropdownOpen(o => !o)}
+            >
+              {endTime || '연습시간'}
+              <span className="custom-select-arrow">▼</span>
+            </div>
+                {endTimeDropdownOpen && (
+                  <ul className="custom-select-list" style={{ maxHeight: 150 }}>
+                    <li
+                      className="custom-select-list-item"
+                      onClick={() => { setEndTime(''); setEndTimeDropdownOpen(false); }}
+                    >
+                      연습시간
+                    </li>
+                    {timeOptions.map((time, idx) => (
+                      <li
+                        key={idx}
+                        className="custom-select-list-item"
+                        onClick={() => { setEndTime(time); setEndTimeDropdownOpen(false); }}
+                      >
+                        {time}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
           <button
+            className="reservation-submit-btn"
             disabled={!selectedDate || !selectedEvent || !selectedSong || !startTime || !endTime}
             onClick={handleReservation}
           >
