@@ -14,3 +14,6 @@
   flex-direction: column;   /* 세로 방향 배치 */
   min-height: 100vh;        /* 화면 높이 100% */
 }
+.divdiv{
+  background-color: aqua;
+}

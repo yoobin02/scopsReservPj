@@ -19,6 +19,9 @@ function TimeTablePage(){
       <div className="phone-frame">
         <div className="App"> 
           <Headers onMenuClick={toggleMenu} username="김유빈" isOpen={menuOpen} onClose={closeMenu}></Headers>
+          <div>
+            
+          </div>
         </div>
       </div>
     );
