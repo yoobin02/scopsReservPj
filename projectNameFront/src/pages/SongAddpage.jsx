@@ -53,7 +53,7 @@ function SongAddPage() {
   };
 
   try {
-    const response = await axios.post('http://localhost:8080/api/songs', payload);
+    await axios.post('http://localhost:8080/api/songs', payload);
     alert('등록 완료!');
     navigate('/scops/songRegister', { state: { eventName: eventName } });
   } catch (err) {
@@ -84,9 +84,14 @@ function SongAddPage() {
             {sessions.map((session, idx) => (
               <div className="session-input" key={idx}>
                 <select value={session.type} onChange={(e) => handleSessionChange(idx, 'type', e.target.value)}>
-                  <option value="V">V</option>
-                  <option value="B">B</option>
-                  <option value="D">D</option>
+                  <option value="V">Vocal</option>
+                  <option value="B">Bass</option>
+                  <option value="D">Drum</option>
+                  <option value="G">Guitar</option>
+                  <option value="P">Piano</option>
+                  <option value="Vi">Violin</option>
+                  <option value="C">Cajon</option>
+                  <option value="etc">etc</option>
                 </select>
                 <input
                   type="text"
