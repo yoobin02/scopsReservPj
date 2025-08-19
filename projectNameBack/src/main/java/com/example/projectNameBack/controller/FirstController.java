@@ -1,5 +1,6 @@
 package com.example.projectNameBack.controller;
 
+import com.example.projectNameBack.dto.LoginResponseDto;
 import com.example.projectNameBack.dto.SaveUserLoginInfoDto;
 import com.example.projectNameBack.dto.SongRegisterDto;
 import com.example.projectNameBack.dto.UserInfoDto;
@@ -25,7 +26,7 @@ public class FirstController {
         String userID = loginData.get("userID");
         String password = loginData.get("password");
 
-        UserInfoDto response = authService.login(userID, password);
+        LoginResponseDto response = authService.login(userID, password);
 
         if(response != null){
             return ResponseEntity.ok(response); // 로그인 성공: 사용자 정보 반환
