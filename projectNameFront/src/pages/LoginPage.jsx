@@ -16,15 +16,17 @@ function LoginPage() {
     password: password,
   })
   .then(response => {
-    console.log('로그인 성공:', response.data);
-    if (response.data) {
-      const { userName, userYear, session } = response.data;
-      setUser({ userName, userYear, session });
-      navigate('/scops/main');
-    } else {
-      alert("로그인 실패: 사용자 정보가 없습니다.");
-    }
-  })
+  console.log('로그인 성공:', response.data);
+  if (response.data && response.data.user) {
+    const { userName, userYear, session } = response.data.user; // userInfo에서 가져오기
+    setUser({ userName, userYear, session });
+    localStorage.setItem('token', response.data.token); // 토큰 저장
+    navigate('/scops/main');
+  } else {
+    alert("로그인 실패: 사용자 정보가 없습니다.");
+  }
+})
+
   .catch(error => {
     console.error('로그인 실패:', error.response?.data || error.message);
     alert("로그인 실패: 아이디 또는 비밀번호를 확인해주세요.");
