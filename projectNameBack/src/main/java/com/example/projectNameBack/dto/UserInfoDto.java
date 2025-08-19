@@ -12,4 +12,9 @@ public class UserInfoDto {
     private String role;
     private int userYear;
 
+    public UserInfoDto(String userName, String session, int userYear) {
+        this.userName = userName;
+        this.session = session;
+        this.userYear = userYear;
+    }
 }

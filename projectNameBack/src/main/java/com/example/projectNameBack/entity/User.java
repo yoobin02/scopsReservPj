@@ -21,7 +21,6 @@ public class User {
 
     @Column(unique = true)
     private String userID; // 로그인 ID
-
     private String userPassword;
     private String userName;
     private String session;
@@ -32,5 +31,11 @@ public class User {
     private Set<SongRegister> reservations = new HashSet<>();
 
     public User(String userName, int userYear, String session, String userID, String userPassword, String role) {
+        this.userName = userName;
+        this.userYear = userYear;
+        this.session = session;
+        this.userID = userID;
+        this.userPassword = userPassword;
+        this.role = role;
     }
 }
