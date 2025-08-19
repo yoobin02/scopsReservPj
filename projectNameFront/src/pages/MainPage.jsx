@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext.js";
 import './MainPage.css';
 import Headers from '../components/Headers';
 import '../components/Headers.css';
@@ -5,6 +6,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function MainPage() {
+  const { user } = useAuth();
+  const userName = user?.userName;
   const [menuOpen, setMenuOpen] = useState(false);
   const [date, setDate] = useState('');
   const [dayOfWeek, setDayOfWeek] = useState('');
@@ -64,10 +67,10 @@ function MainPage() {
     const end = result[result.length - 1].fullDate;
 
     axios
-      .get(`http://localhost:8080/api/songs/by-week?start=${start}&end=${end}`)
+      .get(`http://localhost:8080/api/songs/by-week?start=${start}&end=${end}&userName=${userName}`)
       .then(response => setSongs(response.data))
       .catch(console.error);
-  }, []);
+  }, [userName]);
 
   const todayFullDate = weekInfo[0]?.fullDate;
   const todaySongs = mergeSongs(songs.filter(song => song.date === todayFullDate));
