@@ -1,29 +1,63 @@
 import './UserRegisterPage.css';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
+const sectionList = [
+  "보컬", "건반", "키보드", "일렉기타", "통기타", "베이스", "드럼", "기타"
+];
+
 const UserRegisterPage = () => {
-  const [form, setForm] = useState({
-    name: "",
-    section: "",
-    studentId: "",
-    password: "",
-    confirmPassword: "",
-    etc: ""
-  });
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [userPasswordConfirm, setUserPasswordConfirm] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userYear, setUserYear] = useState("");
+  const [userSession, setUserSession] = useState("");
+  const [customSession, setCustomSession] = useState("");
+  //const [userRole, setUserRole] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const sectionList = [
-    "보컬", "건반", "키보드", "일렉기타", "통기타", "베이스", "드럼", "기타"
-  ];
+  const dropdownRef = useRef(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    window.addEventListener('mousedown', handleClickOutside);
+    return () => window.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleUserRegister = () => {
+    if (userPassword !== userPasswordConfirm) {
+      alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      return;
+    }
+
+    axios.post('http://localhost:8080/scops/userRegister', {
+      userName,
+      userYear,
+      session: userSession,
+      userID: userId,
+      userPassword,
+      //role: userRole,
+    })
+    .then(res => {
+      console.log('회원가입:', res.data);
+      navigate('/scops/login');
+    })
+    .catch(err => {
+      console.error('회원가입 실패:', err);
+    });
   };
 
-  const handleSubmit = () => {
-    console.log(form);
+  const handleSelect = (sec) => {
+    setUserSession(sec);
+    setDropdownOpen(false);
+    if (sec !== "기타") setCustomSession("");
   };
 
   return (
@@ -33,73 +67,89 @@ const UserRegisterPage = () => {
           <div className='logo-box'>
             <img src={`/images/scopsLogo.png`} alt="Scops Logo" />
           </div>
-          <p className="register-form"></p>
+
           <input
             type="text"
-            name="name"
             placeholder="이름"
-            value={form.name}
-            onChange={handleChange}
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="input-box"
+          />
+          <input
+            type="text"
+            placeholder="기수 입력"
+            value={userYear}
+            onChange={(e) => setUserYear(e.target.value)}
             className="input-box"
           />
 
-          <div className="input-box">
+          {/* 세션 드롭다운 */}
+          <div className="input-box" ref={dropdownRef}>
             <div className="section-label">
-              세션 <span className="section-note">-중복선택 가능</span>
+              세션
             </div>
-          </div>
-            <div className="section-options">
-              {sectionList.map((sec) => (
-                <label key={sec} className="radio-label">
-                  <input
-                    type="radio"
-                    name="section"
-                    value={sec}
-                    checked={form.section === sec}
-                    onChange={handleChange}
-                  />
-                  <span>{sec}</span>
-                </label>
-              ))}
+
+            <div
+              className={`custom-select-display ${!userSession ? 'custom-select-placeholder' : ''}`}
+              onClick={() => setDropdownOpen(o => !o)}
+            >
+              {userSession || '세션 선택'}
+              <span className="custom-select-arrow">▼</span>
             </div>
-            {form.section === "기타" && (
-              <input
-                type="text"
-                name="etc"
-                placeholder="직접 입력"
-                value={form.etc}
-                onChange={handleChange}
-                className="input-etc"
-              />
+
+            {dropdownOpen && (
+              <ul className="custom-select-list">
+                {sectionList.map((sec, idx) => (
+                  <li
+                    key={idx}
+                    className="custom-select-list-item"
+                    onClick={() => handleSelect(sec)}
+                  >
+                    {sec}
+                  </li>
+                ))}
+              </ul>
             )}
 
+            {userSession === "기타" && (
+              <input
+                type="text"
+                placeholder="직접 입력"
+                value={customSession}
+                onChange={(e) => {
+                  setCustomSession(e.target.value);
+                  setUserSession(e.target.value);
+                }}
+                className="input-etc"
+                style={{ marginTop: '8px', padding: '6px', width: '100%' }}
+              />
+            )}
+          </div>
+
           <input
             type="text"
-            name="studentId"
             placeholder="학번"
-            value={form.studentId}
-            onChange={handleChange}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             className="input-box"
           />
           <input
             type="password"
-            name="password"
             placeholder="비밀번호"
-            value={form.password}
-            onChange={handleChange}
+            value={userPassword}
+            onChange={(e) => setUserPassword(e.target.value)}
             className="input-box"
           />
           <input
             type="password"
-            name="confirmPassword"
             placeholder="비밀번호 확인"
-            value={form.confirmPassword}
-            onChange={handleChange}
+            value={userPasswordConfirm}
+            onChange={(e) => setUserPasswordConfirm(e.target.value)}
             className="input-box"
           />
 
           <button
-            onClick={handleSubmit}
+            onClick={handleUserRegister}
             style={{ cursor: 'pointer'}}
             className="submit-button"
           >

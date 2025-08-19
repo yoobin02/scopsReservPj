@@ -1,8 +1,10 @@
 import './Headers.css';
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 
-function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
+function Header({ onMenuClick, isOpen, onClose }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const handleNavigation = (path) => {
     onClose();
     navigate(path);
@@ -19,7 +21,7 @@ function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
           <img className='logo-box2' src={`/images/scopsLogo.png`} alt='로고'></img>
         </div>
         <div className="username">
-          <span>안녕하세요, <br />{username}님</span>
+          <span>안녕하세요, <br/>{user.userName}님</span>
         </div>
       </div>
 
@@ -29,9 +31,9 @@ function Header({ onMenuClick, username = "김유빈", isOpen, onClose }) {
         <button className='sideMyPageBtn' onClick={() => handleNavigation('/scops/myPage')}>MY</button>
         <div className='menu-container'>
           <div>
-          <span className='sidefont'>김유빈</span>
-          <span>기수</span><br />
-          <span>포지션</span>
+          <span className='sidefont'>{user.userName}</span>
+          <span>{user.userYear}기</span><br/>
+          <span>{user.session}</span>
           </div>
           <ul className="menu-list">
           <li className='menu-list-li' onClick={() => handleNavigation('/scops/main')}>홈</li>
