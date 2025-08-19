@@ -1,33 +1,39 @@
 import './LoginPage.css';
+import { useAuth } from "../context/AuthContext.js";
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
 function LoginPage() {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // 실제 로그인 로직은 주석 처리됨
-    // axios.post('http://localhost:8080/api/scops/login', {
-    //   studentId: studentId,
-    //   password: password,
-    // })
-    // .then(response => {
-    //   console.log('로그인 성공:', response.data);
-    //   navigate('/scops/main');
-    // })
-    // .catch(error => {
-    //   console.error('로그인 실패:', error);
-    // });
+  axios.post('http://localhost:8080/scops/login', {
+    userID: studentId,
+    password: password,
+  })
+  .then(response => {
+    console.log('로그인 성공:', response.data);
+    if (response.data) {
+      const { userName, userYear, session } = response.data;
+      setUser({ userName, userYear, session });
+      navigate('/scops/main');
+    } else {
+      alert("로그인 실패: 사용자 정보가 없습니다.");
+    }
+  })
+  .catch(error => {
+    console.error('로그인 실패:', error.response?.data || error.message);
+    alert("로그인 실패: 아이디 또는 비밀번호를 확인해주세요.");
+  });
+};
 
-    navigate('/scops/main');
-  };
 
   const handleRegisterClick = () => {
     navigate('/scops/register');
-    console.log('문제');
   };
 
   return (

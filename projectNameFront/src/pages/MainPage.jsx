@@ -77,7 +77,6 @@ function MainPage() {
       <div className="App">
         <Headers
           onMenuClick={toggleMenu}
-          username="김유빈"
           isOpen={menuOpen}
           onClose={closeMenu}
         />
