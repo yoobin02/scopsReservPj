@@ -5,20 +5,23 @@ import com.example.projectNameBack.dto.SaveUserLoginInfoDto;
 import com.example.projectNameBack.dto.SongRegisterDto;
 import com.example.projectNameBack.dto.UserInfoDto;
 import com.example.projectNameBack.entity.User;
+import com.example.projectNameBack.repository.UserLoginInfoRepository;
 import com.example.projectNameBack.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.projectNameBack.util.JwtUtil;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class FirstController {
     private final AuthService authService;
-
-    public FirstController(AuthService authService){
+    private final UserLoginInfoRepository userLoginInfoRepository;
+    public FirstController(AuthService authService, UserLoginInfoRepository userLoginInfoRepository){
         this.authService = authService;
+        this.userLoginInfoRepository = userLoginInfoRepository;
     }
 
     @PostMapping("/scops/login")
@@ -42,6 +45,27 @@ public class FirstController {
             return ResponseEntity.ok(true);
         } catch (Exception e) {
             return ResponseEntity.ok(false);
+        }
+    }
+    @DeleteMapping("/scops/deleteUser")
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).body("토큰 없음");
+            }
+
+            String token = authHeader.substring(7);
+            String userID = JwtUtil.getUserIdFromToken(token);
+            if (userID == null) {
+                return ResponseEntity.status(401).body("유효하지 않은 토큰");
+            }
+
+            authService.deleteUserCompletely(userID); // 서비스 호출
+
+            return ResponseEntity.ok("회원 탈퇴 성공");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("서버 오류");
         }
     }
 
