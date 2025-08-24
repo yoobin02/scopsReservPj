@@ -8,6 +8,7 @@ import com.example.projectNameBack.repository.UserLoginInfoRepository;
 import com.example.projectNameBack.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -49,5 +50,12 @@ public class AuthService {
         user.setSession(saveUserLoginInfoDto.getSession());
         user.setRole("none");
         return userLoginInfoRepository.save(user);
+    }
+    @Transactional
+    public void deleteUserCompletely(String userID) {
+        Optional<User> userOpt = userLoginInfoRepository.findByUserID(userID);
+        if (userOpt.isPresent()) {
+            userLoginInfoRepository.delete(userOpt.get());
+        }
     }
 }
