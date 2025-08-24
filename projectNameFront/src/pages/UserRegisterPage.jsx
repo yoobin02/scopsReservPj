@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 const sectionList = [
-  "보컬", "건반", "키보드", "일렉기타", "통기타", "베이스", "드럼", "기타"
+  "V", "G", "B", "D", "etc"
 ];
 
 const UserRegisterPage = () => {
@@ -47,6 +47,7 @@ const UserRegisterPage = () => {
     })
     .then(res => {
       console.log('회원가입:', res.data);
+      alert("회원가입이 완료되었습니다.")
       navigate('/scops/login');
     })
     .catch(err => {

@@ -84,3 +84,18 @@
 .menu-container{
   margin: 100px 0px;
 }
+.logoutBtn{
+  color: #EAB211;
+  margin-top: 350px;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+}
+.userOutBtn{
+  margin-top: 5px;
+  display: block;
+  color: #EAB211;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+}
