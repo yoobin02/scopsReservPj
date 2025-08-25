@@ -84,48 +84,52 @@ const UserRegisterPage = () => {
             className="input-box"
           />
 
-          {/* 세션 드롭다운 */}
-          <div className="input-box" ref={dropdownRef}>
-            <div className="section-label">
-              세션
-            </div>
+          {/* 세션 라디오 버튼 */}
+<div className="input-box">
+  <div className="section-label">세션</div>
+  <div className="radio-group">
+    {sectionList.map((sec, idx) => (
+      <label key={idx} style={{ marginRight: '10px' }}>
+        <input
+          type="radio"
+          name="session"
+          value={sec}
+          checked={userSession === sec}
+          onChange={() => {
+            setUserSession(sec);
+            if (sec !== "etc") setCustomSession("");
+          }}
+        />
+        {sec}
+      </label>
+    ))}
 
-            <div
-              className={`custom-select-display ${!userSession ? 'custom-select-placeholder' : ''}`}
-              onClick={() => setDropdownOpen(o => !o)}
-            >
-              {userSession || '세션 선택'}
-              <span className="custom-select-arrow">▼</span>
-            </div>
+    {/* 기타(etc) 선택 시 텍스트 입력 */}
+    <label style={{ marginLeft: '10px' }}>
+      <input
+        type="radio"
+        name="session"
+        value="etc"
+        checked={userSession === customSession || userSession === "etc"}
+        onChange={() => setUserSession("etc")}
+      />
+      기타
+    </label>
+    <input
+      type="text"
+      placeholder="직접 입력"
+      value={customSession}
+      onChange={(e) => {
+        setCustomSession(e.target.value);
+        setUserSession(e.target.value);
+      }}
+      disabled={userSession !== "etc"}
+      className="input-etc"
+      style={{ marginLeft: '8px', padding: '6px' }}
+    />
+  </div>
+</div>
 
-            {dropdownOpen && (
-              <ul className="custom-select-list">
-                {sectionList.map((sec, idx) => (
-                  <li
-                    key={idx}
-                    className="custom-select-list-item"
-                    onClick={() => handleSelect(sec)}
-                  >
-                    {sec}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {userSession === "기타" && (
-              <input
-                type="text"
-                placeholder="직접 입력"
-                value={customSession}
-                onChange={(e) => {
-                  setCustomSession(e.target.value);
-                  setUserSession(e.target.value);
-                }}
-                className="input-etc"
-                style={{ marginTop: '8px', padding: '6px', width: '100%' }}
-              />
-            )}
-          </div>
 
           <input
             type="text"
