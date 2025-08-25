@@ -70,11 +70,20 @@
   margin-right: 6px;
   cursor: pointer;
   background-color: #fff;
-  transition: 0.2s;
+  position: relative;
 }
 
-.radio-group input[type="radio"]:checked {
-  border: 6px solid #ffb347; /* 선택 시 오렌지톤 */
+.radio-group input[type="radio"]:checked::after {
+  content: '';
+  display: block;
+  width: 10px;   /* 체크 표시 크기 */
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ffb347; /* 체크 시 색 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* 기타 입력창 */
@@ -101,7 +110,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 20%;
+  margin-top: 0%;
 }
 
 .submit-button:hover {
