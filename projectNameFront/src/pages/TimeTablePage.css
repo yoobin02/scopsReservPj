@@ -1,75 +1,126 @@
-.phone-frame {
+.app-container {
   position: relative;
-  width: 393px;                  /* iPhone 16 Pro 가로폭 */
-  height: 852px;                 /* iPhone 16 Pro 세로높이 */
-  border: 12px solid #000;       /* 두꺼운 테두리로 휴대폰 느낌 */
-  border-radius: 50px;           /* 모서리 둥글게 */
-  margin: 40px auto;             /* 브라우저 중앙에 배치 */
-  overflow: hidden;              /* 내부 내용 넘치면 숨김 */
-  box-shadow: 0 0 20px rgba(0,0,0,0.3); /* 입체감 그림자 */
-  background: #fff;              /* 내부 배경 흰색 */
+  width: 393px;
+  height: 752px;
+  margin: 40px auto;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  border-radius: 20px;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
 }
+
 .App {
   display: flex;
-  flex-direction: column;   /* 세로 방향 배치 */
-  min-height: 100vh;        /* 화면 높이 100% */
-}
-
-.timetable-container {
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto; /* 전체 화면 스크롤 */
   padding: 10px;
-}
-
-.timetable {
-  display: grid;
-  grid-template-rows: auto;
-  border: 1px solid #f0e0a0;
-}
-
-.timetable-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-
-.header-cell {
-  background-color: #fff8e7;
-  border: 1px solid #f0e0a0;
-  text-align: center;
-  font-weight: bold;
-  height: 30px;
-  line-height: 30px;
-}
-
-.timetable-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-
-.timetable-cell {
-  border: 1px solid #f0e0a0;
-  position: relative;
-  height: 40px;
-}
-
-.timetable-event {
-  position: absolute;
-  left: 0;
-  right: 0;
-  background-color: #ffeaa7;
-  border: 1px solid #f0e0a0;
-  font-size: 12px;
-  padding: 2px;
   box-sizing: border-box;
 }
 
-.people-list {
+.timetable-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.my-timetable {
+  margin-bottom: 20px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: 40px repeat(7, 1fr); /* 시간열 좁힘 */
+  grid-template-rows: 25px repeat(11, 40px); /* 헤더 25px + 10~20시 11행 */
+  border: 1px solid #f0e0a0;
+  background: #fffef8;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+/* 헤더 */
+.header-cell {
+  border: 1px solid #f0e0a0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff8e7;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+/* 시간열 */
+.time-cell {
+  border: 1px solid #f0e0a0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fffdf0;
+  font-size: 9px;
+}
+
+/* 요일 셀 */
+.calendar-cell {
+  border: 1px solid #f0e0a0;
+}
+
+/* 수업 블록 */
+.class-block {
+  background: #ffeaa7;
+  border: 1px solid #eacb64;
+  border-radius: 4px;
+  font-size: 9px;
+  padding: 1px 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.class-subject {
+  font-weight: bold;
+}
+
+.class-place {
+  font-size: 8px;
+  color: #555;
+}
+
+/* 세션 리스트 */
+.sessions-list {
   margin-top: 10px;
 }
 
-.person {
-  background: #fff8e7;
+.session-card {
+  background: #fffef0;
   border-radius: 20px;
-  padding: 5px 10px;
-  margin: 4px 0;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
   cursor: pointer;
-  display: inline-block;
+  box-shadow: 0 0 5px rgba(255, 230, 100, 0.5);
+  font-size: 12px;
+}
+
+.session-card:hover {
+  background: #fff4c1;
+}
+
+.tags {
+  font-weight: bold;
+  color: #d4a100;
+}
+
+.expanded-timetable {
+  margin-top: 10px;
+  padding: 8px;
+  background: #fffef8;
+  border: 1px solid #f0e0a0;
+  border-radius: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 12px;
 }
