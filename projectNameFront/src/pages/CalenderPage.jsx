@@ -1,24 +1,14 @@
 import './CalenderPage.css';
 import Headers from '../components/Headers';
-import  '../components/Headers.css';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import '../components/Headers.css';
+import { useState } from 'react';
 
 const rangeEvents = [
-  { start: "2025-07-11", end: "2025-07-13", color: "pink", title: "합주실 단장" },
-  { start: "2025-07-15", end: "2025-07-17", color: "lightgreen", title: "스콥스 정기공연" },
-  { start: "2025-07-17", end: "2025-07-18", color: "skyblue", title: "행사" },
-  { start: "2025-07-28", end: "2025-07-31", color: "lightgreen", title: "다른 일정" },
-  { start: "2025-07-30", end: "2025-08-01", color: "lightcoral", title: "한강 버스킹" }
+  { start: "2025-09-11", end: "2025-09-13", color: "pink", title: "합주실 단장" },
 ];
 
 const dailyEvents = [
-  { date: "2025-07-05", title: "머큐리얼" },
-  { date: "2025-07-05", title: "아지랑이" },
-  { date: "2025-07-11", title: "머큐리얼" },
-  { date: "2025-07-11", title: "아지랑이" },
-  { date: "2025-07-17", title: "머큐리얼" },
-  { date: "2025-07-25", title: "정기공연" }
+  { date: "2025-09-05", title: "머큐리얼" },
 ];
 
 function CalenderPage() {
@@ -82,58 +72,56 @@ function CalenderPage() {
       setCurrentMonth(currentMonth + 1);
     }
   };
+return (
+  <div className="app-container">
+    <div className="App">
+      <Headers
+        onMenuClick={toggleMenu}
+        username="김유빈"
+        isOpen={menuOpen}
+        onClose={closeMenu}
+      />
 
-  return (
-    <div className="phone-frame">
-      <div className="App">
-        <Headers
-          onMenuClick={toggleMenu}
-          username="김유빈"
-          isOpen={menuOpen}
-          onClose={closeMenu}
-        />
+      <div className="calendarPage-calendar-container">
+        <button className="circle-btn left-btn" onClick={prevMonth}>{"<"}</button>
+        <h2 className="month-title">{currentMonth}월</h2>
+        <button className="circle-btn right-btn" onClick={nextMonth}>{">"}</button>
 
-        <div className="calendarPage-calendar-container">
-          <button className="circle-btn left-btn" onClick={prevMonth}>{"<"}</button>
-          <h2 className="month-title">{currentMonth}월</h2>
-          <button className="circle-btn right-btn" onClick={nextMonth}>{">"}</button>
-
-          <div className="calendarPage-calendar-grid">
-            {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
-              <div key={day} className="calendar-day-header">
-                {day}
-              </div>
-            ))}
-            {calendarCells.map((date, idx) => (
-              <div key={idx} className="calendarPage-calendar-cell">
-                {date && (
-                  <>
-                    <div className="date-number">{date.getDate()}</div>
-                    {getRangeEventsForDate(date).map((event, i) => (
-                      <div
-                        key={i}
-                        className="event-bar"
-                        style={{ backgroundColor: event.color }}
-                      >
-                        {event.showTitle ? event.title : ""}
+        <div className="calendarPage-calendar-grid">
+          {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
+            <div key={day} className="calendar-day-header">
+              {day}
+            </div>
+          ))}
+          {calendarCells.map((date, idx) => (
+            <div key={idx} className="calendarPage-calendar-cell">
+              {date && (
+                <>
+                  <div className="date-number">{date.getDate()}</div>
+                  {getRangeEventsForDate(date).map((event, i) => (
+                    <div
+                      key={i}
+                      className="event-bar"
+                      style={{ backgroundColor: event.color }}
+                    >
+                      {event.showTitle ? event.title : ""}
+                    </div>
+                  ))}
+                  <div className="events">
+                    {getDailyEvents(date).map((event, i) => (
+                      <div key={i} className="event-item">
+                        {event.title}
                       </div>
                     ))}
-                    <div className="events">
-                      {getDailyEvents(date).map((event, i) => (
-                        <div key={i} className="event-item">
-                          {event.title}
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
-
 export default CalenderPage;

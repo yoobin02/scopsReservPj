@@ -77,10 +77,6 @@ function SongRegisterPage() {
       });
   }, [selectedEvent]);
 
-  // 드롭다운 변경 시 선택 행사명 업데이트
-  const handleChange = (e) => {
-    setSelectedEvent(e.target.value);
-  };
 
   // + 버튼 클릭 시 등록 페이지 이동
   const handleNavigation = (path) => {
@@ -88,7 +84,7 @@ function SongRegisterPage() {
   };
 
   return (
-    <div className="phone-frame">
+    <div className="app-container">
       <div className="App">
         <Headers onMenuClick={toggleMenu} username="김유빈" isOpen={menuOpen} onClose={closeMenu} />
         <div className='songResister-mainContainer'>

@@ -1,4 +1,5 @@
 import './ReservationPage.css';
+import { useAuth } from "../context/AuthContext.js";
 import Headers from '../components/Headers';
 import '../components/Headers.css';
 import { useState, useEffect, useRef } from 'react';
@@ -9,7 +10,8 @@ function ReservationPage() {
   const [songs, setSongs] = useState([]);
   const [weekInfo, setWeekInfo] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
-
+  const { user } = useAuth();
+  const userName = user?.userName;
   const [eventList, setEventList] = useState([]);        // 모든 행사명 리스트
   const [songList, setSongList] = useState([]);          // 선택된 행사에 따른 곡 리스트
   const [selectedEvent, setSelectedEvent] = useState(''); // 선택된 행사명
@@ -17,9 +19,6 @@ function ReservationPage() {
 
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-
-  // 로그인 사용자 이름 상태 예시 (실제 로그인 연동 시 context 등에서 받아올 것)
-  const [userName, setUserName] = useState('김유빈');
 
   // 드롭다운 오픈 상태 관리용
   const [eventDropdownOpen, setEventDropdownOpen] = useState(false);
@@ -145,7 +144,7 @@ function ReservationPage() {
   });
 
   return (
-    <div className="phone-frame">
+    <div className="app-container">
       <div className="App">
         <Headers onMenuClick={toggleMenu} username={userName} isOpen={menuOpen} onClose={closeMenu} />
 

@@ -39,7 +39,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="phone-frame">
+    <div className="app-container">
       <div className="App">
         <div className="login-container">
           <div className="logo-box">

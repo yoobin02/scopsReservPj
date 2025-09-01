@@ -66,31 +66,33 @@ function Header({ onMenuClick, isOpen, onClose }) {
       {isOpen && <div className="overlay" onClick={onClose}></div>}
 
       <div className={`side-menu ${isOpen ? 'open' : ''}`}>
-        <button className='sideMyPageBtn' onClick={() => handleNavigation('/scops/myPage')}>MY</button>
-        <div className='menu-container'>
-          <div>
-          {user && (
-            <>
-              <span className='sidefont'>{user.userName}</span>
-              <span>{user.userYear}기</span><br/>
-              <span>{user.session}</span>
-            </>
-          )}
-        </div>
+  <button className='sideMyPageBtn' onClick={() => handleNavigation('/scops/myPage')}>MY</button>
+  
+  <div className='menu-container'>
+    {user && (
+      <>
+        <span className='sidefont'>{user.userName}</span>
+        <span>{user.userYear}기</span><br/>
+        <span>{user.session}</span>
+      </>
+    )}
 
-          <ul className="menu-list">
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/main')}>홈</li>
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/reservation')}>예약</li>
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/songRegister')}>곡 등록</li>
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/calender')}>캘린더</li>
-          <li className='menu-list-li' onClick={() => handleNavigation('/scops/timeTable')}>시간표</li>
-          </ul>
-          <div>
-            <button className='logoutBtn' onClick={() => logout()}>로그아웃</button>
-            <button className='userOutBtn' onClick={() => deleteUser()}>탈퇴</button>
-          </div>
-        </div>
-      </div>
+    <ul className="menu-list">
+      <li className='menu-list-li' onClick={() => handleNavigation('/scops/main')}>홈</li>
+      <li className='menu-list-li' onClick={() => handleNavigation('/scops/reservation')}>예약</li>
+      <li className='menu-list-li' onClick={() => handleNavigation('/scops/songRegister')}>곡 등록</li>
+      <li className='menu-list-li' onClick={() => handleNavigation('/scops/calender')}>캘린더</li>
+      <li className='menu-list-li' onClick={() => handleNavigation('/scops/timeTable')}>시간표</li>
+    </ul>
+  </div>
+
+  {/* 버튼은 항상 맨 아래 */}
+  <div className="menu-buttons">
+    <button className='logoutBtn' onClick={logout}>로그아웃</button>
+    <button className='userOutBtn' onClick={deleteUser}>탈퇴</button>
+  </div>
+</div>
+
     </>
   );
 }

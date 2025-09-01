@@ -23,7 +23,6 @@
   height: auto;  /* 비율 유지 */
 }
 
-
 /* 슬로건 문구 */
 .slogan {
   font-family: 'ramaraja';
@@ -40,9 +39,8 @@
   padding: 20px;
   margin-bottom: 15px;           /* 입력창 간격 */
   box-sizing: border-box;        /* padding 포함해서 width 계산 */
-  border: 1px solid #ccc;        /* 테두리 */
-  border-radius: 30px;            /* 모서리 둥글게 */
-  border: none; /* 테두리는 없애고 */
+  border-radius: 30px;           /* 모서리 둥글게 */
+  border: none;                  /* 테두리 제거 */
   box-shadow: 0 0 10px rgba(255, 238, 187, 1); /* 번지는 효과 */
   background-color: #FFFFFF;
 }
@@ -57,15 +55,15 @@
 
 /* 로그인 버튼 */
 .login-button {
-  width: 115%;
-  padding: 3%;
-  background: #ddd;
+  width: 100%;        /* 부모 기준 꽉 채우기 */
+  padding: 14px;
+  background: #FFEEBB;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;               /* 마우스 커서 포인터 */
-  margin-top: 45%;            /* 이거 바꿔서 맞춰봤는데 너 모니터에서 확인해보고 어떤지 말해줘~ */
-  background-color: #FFEEBB;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;   /* 살짝 간격만 */
 }
+
 
 /* 로그인 버튼 hover 시 색상 변경 */
 .login-button:hover {
@@ -93,17 +91,18 @@
   }
 }
 
-/* 휴대폰 프레임 (iPhone 16 기준) */
-.phone-frame {
-  width: 393px;                  /* iPhone 16 Pro 가로폭 */
-  height: 852px;                 /* iPhone 16 Pro 세로높이 */
-  border: 12px solid #000;       /* 두꺼운 테두리로 휴대폰 느낌 */
-  border-radius: 50px;           /* 모서리 둥글게 */
-  margin: 40px auto;             /* 브라우저 중앙에 배치 */
-  overflow: hidden;              /* 내부 내용 넘치면 숨김 */
-  box-shadow: 0 0 20px rgba(0,0,0,0.3); /* 입체감 그림자 */
-  background: #fff;              /* 내부 배경 흰색 */
+/* 휴대폰 프레임 (iPhone 16 기준, 검은 테두리 제거) */
+.app-container {
+  position: relative;
+  width: 393px;          /* iPhone 16 Pro 가로폭 */
+  height: 752px;         /* iPhone 16 Pro 세로높이 */
+  margin: 40px auto;     /* 브라우저 중앙 배치 */
+  overflow: hidden;      /* 내부 넘치면 숨김 */
+  background: #fff;      /* 내부 배경 흰색 */
+  box-shadow: 0 0 20px rgba(0,0,0,0.1); /* 살짝 그림자 (테두리X) */
+  border-radius: 20px;   /* 둥근 모서리 (원하면 삭제 가능) */
 }
+
 
 /* 프레임 바깥쪽 전체 배경 */
 body {

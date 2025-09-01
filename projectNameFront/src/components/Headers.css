@@ -16,15 +16,19 @@
 .side-menu {
   position: absolute;
   top: 0;
-  left: 0; /* 항상 왼쪽 0 위치 */
+  left: 0;
   width: 250px;
   height: 100%;
   background-color: #FFEEBB;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
   padding: 20px;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(-100%); /* 처음엔 화면 밖으로 완전히 숨김 */
+  transform: translateX(-100%);
   z-index: 1002;
+
+  display: flex;              /* flexbox 적용 */
+  flex-direction: column;     /* 세로 배치 */
+  justify-content: space-between; /* 위쪽 메뉴와 아래 버튼을 양 끝으로 */
 }
 
 .side-menu.open {
@@ -81,21 +85,24 @@
   border: none; /* 테두리는 없애고 */
   box-shadow: 0 0 5px rgba(255, 238, 187, 1); /* 번지는 효과 */
 }
-.menu-container{
-  margin: 100px 0px;
+.menu-container {
+  margin-top: 50px;
+  flex-grow: 1; /* 남는 공간 차지 → 버튼이 자연스럽게 아래로 밀림 */
 }
-.logoutBtn{
-  color: #EAB211;
-  margin-top: 350px;
-  border: none;
-  cursor: pointer;
-  background-color: transparent;
+.menu-buttons {
+  position: absolute;
+  bottom: 60px;   /* 사이드 메뉴 맨 아래에 고정 */
+  left: 20px;
+  right: 20px;
 }
-.userOutBtn{
-  margin-top: 5px;
+
+.logoutBtn,
+.userOutBtn {
   display: block;
   color: #EAB211;
   border: none;
   cursor: pointer;
   background-color: transparent;
+  font-size: 16px;
+  text-align: left;
 }
