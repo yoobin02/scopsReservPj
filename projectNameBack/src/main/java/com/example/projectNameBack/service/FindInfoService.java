@@ -1,13 +1,11 @@
 package com.example.projectNameBack.service;
 
-import com.example.projectNameBack.dto.ReservationDto;
-import com.example.projectNameBack.dto.ReservationRequestDto;
-import com.example.projectNameBack.dto.SongRegisterDto;
-import com.example.projectNameBack.dto.SongSessionDto;
+import com.example.projectNameBack.dto.*;
 import com.example.projectNameBack.entity.Reservation;
 import com.example.projectNameBack.entity.SongRegister;
 import com.example.projectNameBack.repository.ReservationRepository;
 import com.example.projectNameBack.repository.SongRegisterRepository;
+import com.example.projectNameBack.repository.UserLoginInfoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,10 +16,12 @@ import java.util.stream.Collectors;
 public class FindInfoService {
     private final SongRegisterRepository songRegisterRepository;
     private final ReservationRepository reservationRepository;
+    private final UserLoginInfoRepository userLoginInfoRepository;
 
-    public FindInfoService(SongRegisterRepository songRegisterRepository, ReservationRepository reservationRepository) {
+    public FindInfoService(SongRegisterRepository songRegisterRepository, ReservationRepository reservationRepository, UserLoginInfoRepository userLoginInfoRepository) {
         this.songRegisterRepository = songRegisterRepository;
         this.reservationRepository = reservationRepository;
+        this.userLoginInfoRepository = userLoginInfoRepository;
     }
 
     public List<SongRegisterDto> getSongsByEvent(String eventName) {
@@ -105,4 +105,12 @@ public class FindInfoService {
         }
         reservationRepository.save(reservation);
     }
+
+    public List<UserInfoDto> getSessions() {
+        return userLoginInfoRepository.findAllUsers()
+                .stream()
+                .map(u -> new UserInfoDto(u.getUserName(), u.getSession(), u.getUserYear()))
+                .toList();
+    }
+
 }
