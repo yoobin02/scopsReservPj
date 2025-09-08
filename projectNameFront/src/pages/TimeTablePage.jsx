@@ -1,36 +1,60 @@
 import './TimeTablePage.css';
+import { useAuth } from "../context/AuthContext.js";
 import Headers from '../components/Headers';
 import '../components/Headers.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from 'react';
+import axios from 'axios';
 
-const sessions = [
-  { name: "송민지", gen: "34th", tags: ["V", "K", "G"] },
-  { name: "박서영", gen: "34th", tags: ["V"] },
-  { name: "김유빈", gen: "33th", tags: ["G"] },
-  { name: "김상연", gen: "36th", tags: ["V", "G", "D"] },
-];
+function TimeTablePage() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => setMenuOpen(false);
 
-const mySchedule = [
-  { day: "MON", start: 11, end: 14, subject: "문화상품 브랜딩", place: "전공" },
-  { day: "MON", start: 16, end: 19, subject: "비주얼 디자인 스튜디오", place: "전공" },
-  { day: "WED", start: 14, end: 17, subject: "가나다라", place: "필수" },
-  { day: "FRI", start: 11, end: 14, subject: "노브랜드 버거", place: "일반" },
-  { day: "FRI", start: 16, end: 19, subject: "현장답사", place: "멀티캠퍼스" },
-];
+  const { user } = useAuth();
+  const userName = user?.userName;
 
-const TimeTablePage = () => {
+  // ✅ state로 관리 (초기엔 빈 배열)
+  const [sessions, setSessions] = useState([]);
+  const [mySchedule, setMySchedule] = useState([]);
   const [expandedSession, setExpandedSession] = useState(null);
+
+  // ✅ 컴포넌트 마운트 시 백엔드에서 데이터 불러오기
+  useEffect(() => {
+    // 내 시간표 불러오기
+    axios.get(`http://localhost:8080/scops/myschedule/${userName}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    })
+    .then(res => {
+      setMySchedule(res.data); // [{ day, start, end, subject, place }, ...]
+    })
+    .catch(err => {
+      console.error("내 시간표 로드 실패:", err);
+    });
+
+    // 다른 사람들 리스트 불러오기
+    axios.get("http://localhost:8080/scops/sessions")
+    .then(res => {
+      setSessions(res.data); // [{ name, userYear, session: ["V","G"] }, ...]
+    })
+    .catch(err => {
+      console.error("세션 목록 로드 실패:", err);
+    });
+  }, []);
 
   return (
     <div className="app-container">
       <div className="App">
-        <Headers />
+        <Headers 
+          onMenuClick={toggleMenu}
+          isOpen={menuOpen}
+          onClose={closeMenu}
+        />
 
         <div className="timetable-container">
           {/* 내 시간표 */}
           <div className="my-timetable">
-            <h2>내 시간표</h2>
+            <h2>{userName}의 시간표</h2>
             <div className="calendar">
               {/* 요일 헤더 */}
               <div className="header-cell" style={{ gridColumn: 1, gridRow: 1 }}></div>
@@ -92,14 +116,11 @@ const TimeTablePage = () => {
           {/* 다른 사람들 */}
           <div className="sessions-list">
             {sessions.map((s, idx) => (
-              <div
-                key={idx}
-                className="session-card"
-                onClick={() => setExpandedSession(idx)}
-              >
-                <span>{s.name}_{s.gen}</span>
-                <span className="tags">{s.tags.join(" ")}</span>
+              <div className="session-card" onClick={() => setExpandedSession(idx)}>
+                <span>{s.userName}_{s.userYear}</span>
+                <span className="tags">{s.session}</span>
               </div>
+
             ))}
           </div>
 
@@ -108,7 +129,7 @@ const TimeTablePage = () => {
             <div className="expanded-timetable">
               <h3>{sessions[expandedSession].name}님의 시간표</h3>
               <div className="calendar small">
-                {/* 다른 사람 수업 블록 표시 가능 */}
+                {/* TODO: 해당 사람 시간표도 백엔드에서 불러와서 표시 */}
               </div>
               <button onClick={() => setExpandedSession(null)}>닫기</button>
             </div>
@@ -117,6 +138,6 @@ const TimeTablePage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default TimeTablePage;
