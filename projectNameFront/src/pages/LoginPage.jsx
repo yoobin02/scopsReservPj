@@ -11,7 +11,13 @@ function LoginPage() {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-  axios.post('http://localhost:8080/scops/login', {
+  if(studentId.trim() === "" || password.trim() === "")
+  {
+    alert("아이디와 비밀번호를 입력해주세요.")
+  }
+  else
+  {
+    axios.post('http://localhost:8080/scops/login', {
     userID: studentId,
     password: password,
   })
@@ -31,6 +37,7 @@ function LoginPage() {
     console.error('로그인 실패:', error.response?.data || error.message);
     alert("로그인 실패: 아이디 또는 비밀번호를 확인해주세요.");
   });
+  }
 };
 
 
