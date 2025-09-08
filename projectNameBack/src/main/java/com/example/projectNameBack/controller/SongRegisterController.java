@@ -3,6 +3,7 @@ package com.example.projectNameBack.controller;
 import com.example.projectNameBack.dto.ReservationDto;
 import com.example.projectNameBack.dto.ReservationRequestDto;
 import com.example.projectNameBack.dto.SongRegisterDto;
+import com.example.projectNameBack.dto.UserInfoDto;
 import com.example.projectNameBack.entity.SongRegister;
 import com.example.projectNameBack.service.FindInfoService;
 import com.example.projectNameBack.service.SongRegisterService;
@@ -15,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/songs")
 public class SongRegisterController {
 
     private final SongRegisterService songRegisterService;
@@ -37,19 +37,19 @@ public class SongRegisterController {
     }
 
     // 이벤트 이름으로 곡 조회
-    @GetMapping("/by-event")
+    @GetMapping("/api/songs/by-event")
     public List<SongRegisterDto> getSongsByEvent(@RequestParam String eventName) {
         return findInfoService.getSongsByEvent(eventName);
     }
 
     // 등록된 이벤트 이름만 가져오기
-    @GetMapping("/events")
+    @GetMapping("/api/songs/events")
     public List<String> getEventNames() {
         return findInfoService.getEventNames();
     }
 
     // 곡 예약
-    @PostMapping("/reservation")
+    @PostMapping("/api/songs/reservation")
     public ResponseEntity<?> reservationSong(@RequestBody ReservationRequestDto requestDto) {
         try {
             findInfoService.reserveSong(requestDto);
@@ -58,13 +58,16 @@ public class SongRegisterController {
             return new ResponseEntity<>("예약 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/by-week")
+    @GetMapping("/api/songs/by-week")
     public List<ReservationDto> getSongsByWeek(
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         System.out.println("getSongsByWeek 호출됨, start=" + start + ", end=" + end);
         return findInfoService.getReservationsByDateRange(start, end);
     }
-
+    @GetMapping("/scops/sessions")
+    public List<UserInfoDto> getSessions() {
+        return findInfoService.getSessions();
+    }
 
 }
