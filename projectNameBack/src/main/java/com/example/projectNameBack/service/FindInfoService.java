@@ -112,5 +112,10 @@ public class FindInfoService {
                 .map(u -> new UserInfoDto(u.getUserName(), u.getSession(), u.getUserYear()))
                 .toList();
     }
-
+    public List<ReservationDto> getReservationsForMonth(LocalDate start, LocalDate end) {
+        return reservationRepository.findByDateBetween(start, end)
+                .stream()
+                .map(ReservationDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
