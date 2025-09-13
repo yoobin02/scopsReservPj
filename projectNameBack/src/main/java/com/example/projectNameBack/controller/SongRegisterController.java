@@ -69,5 +69,10 @@ public class SongRegisterController {
     public List<UserInfoDto> getSessions() {
         return findInfoService.getSessions();
     }
-
+    @GetMapping("/api/by-month")
+    public List<ReservationDto> getMonthlyReservations(@RequestParam String start, @RequestParam String end){
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate = LocalDate.parse(end);
+        return findInfoService.getReservationsForMonth(startDate, endDate);
+    }
 }
