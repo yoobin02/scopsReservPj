@@ -40,7 +40,7 @@ function TimeTablePage() {
     .catch(err => {
       console.error("세션 목록 로드 실패:", err);
     });
-  }, []);
+  }, [userName]);
 
   return (
     <div className="app-container">
@@ -116,18 +116,35 @@ function TimeTablePage() {
           {/* 다른 사람들 */}
           <div className="sessions-list">
             {sessions.map((s, idx) => (
-              <div className="session-card" onClick={() => setExpandedSession(idx)}>
-                <span>{s.userName}_{s.userYear}</span>
-                <span className="tags">{s.session}</span>
-              </div>
+              <React.Fragment key={idx}>
+                <div
+                  className="session-card"
+                  onClick={() =>
+                    setExpandedSession(expandedSession === idx ? null : idx)
+                  }
+                >
+                  <span>{s.userName}_{s.userYear}</span>
+                  <span className="tags">{s.session}</span>
+                </div>
 
+                {/* 클릭된 카드 밑에만 시간표 표시 */}
+                {expandedSession === idx && (
+                  <div className="expanded-timetable">
+                    <h3>{s.userName}님의 시간표</h3>
+                    <div className="calendar small">
+                      {/* TODO: 해당 사람 시간표 백엔드에서 불러와서 표시 */}
+                    </div>
+                    <button onClick={() => setExpandedSession(null)}>닫기</button>
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
 
           {/* 클릭한 사람 시간표 */}
           {expandedSession !== null && (
             <div className="expanded-timetable">
-              <h3>{sessions[expandedSession].name}님의 시간표</h3>
+              <h3>{sessions[expandedSession].userName}님의 시간표</h3>
               <div className="calendar small">
                 {/* TODO: 해당 사람 시간표도 백엔드에서 불러와서 표시 */}
               </div>
