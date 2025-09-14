@@ -35,7 +35,7 @@ function LoginPage() {
 
   .catch(error => {
     console.error('로그인 실패:', error.response?.data || error.message);
-    alert("로그인 실패: 아이디 또는 비밀번호를 확인해주세요.");
+    alert("로그인 실패: 아이디 혹은 비밀번호를 확인해주세요.");
   });
   }
 };
