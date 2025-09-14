@@ -76,7 +76,7 @@ function MainPage() {
   const todaySongs = mergeSongs(songs.filter(song => song.date === todayFullDate));
 
   return (
-    <div className="phone-frame">
+    <div className="app-container">
       <div className="App">
         <Headers
           onMenuClick={toggleMenu}

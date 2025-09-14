@@ -117,16 +117,17 @@
   background: #ccc;
 }
 
-.phone-frame {
-  width: 393px;
-  height: 852px;
-  border: 12px solid #000;
-  border-radius: 50px;
-  margin: 40px auto;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  background: #fff;
+.app-container {
+  position: relative;
+  width: 393px;          /* iPhone 16 Pro 가로폭 */
+  height: 752px;         /* iPhone 16 Pro 세로높이 */
+  margin: 40px auto;     /* 브라우저 중앙 배치 */
+  overflow: hidden;      /* 내부 넘치면 숨김 */
+  background: #fff;      /* 내부 배경 흰색 */
+  box-shadow: 0 0 20px rgba(0,0,0,0.1); /* 살짝 그림자 (테두리X) */
+  border-radius: 20px;   /* 둥근 모서리 (원하면 삭제 가능) */
 }
+
 
 body {
   background: #eaeaea;

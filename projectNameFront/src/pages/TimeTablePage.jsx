@@ -2,124 +2,124 @@ import './TimeTablePage.css';
 import Headers from '../components/Headers';
 import '../components/Headers.css';
 import { useState } from 'react';
+import React from 'react';
 
-const scheduleData = {
-  me: {
-    name: "김유빈",
-    year: "33th",
-    sessions: ["G"],
-    timetable: [
-      { day: "MON", start: 11, end: 13, title: "문화사표 브레드" },
-      { day: "FRI", start: 11, end: 13, title: "노브랜드 버거" },
-    ],
-  },
-  others: [
-    {
-      name: "송민지",
-      year: "34th",
-      sessions: ["V", "K", "G"],
-      timetable: [
-        { day: "MON", start: 14, end: 16, title: "보컬 연습" },
-        { day: "THU", start: 15, end: 18, title: "합주" },
-      ],
-    },
-    {
-      name: "박서영",
-      year: "34th",
-      sessions: ["V"],
-      timetable: [
-        { day: "TUE", start: 10, end: 12, title: "수업" },
-        { day: "FRI", start: 13, end: 15, title: "팀 연습" },
-      ],
-    },
-    {
-      name: "김상연",
-      year: "36th",
-      sessions: ["V", "G", "D"],
-      timetable: [
-        { day: "WED", start: 12, end: 14, title: "드럼 연습" },
-        { day: "SAT", start: 10, end: 13, title: "합주" },
-      ],
-    },
-  ],
-};
+const sessions = [
+  { name: "송민지", gen: "34th", tags: ["V", "K", "G"] },
+  { name: "박서영", gen: "34th", tags: ["V"] },
+  { name: "김유빈", gen: "33th", tags: ["G"] },
+  { name: "김상연", gen: "36th", tags: ["V", "G", "D"] },
+];
 
-const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const mySchedule = [
+  { day: "MON", start: 11, end: 14, subject: "문화상품 브랜딩", place: "전공" },
+  { day: "MON", start: 16, end: 19, subject: "비주얼 디자인 스튜디오", place: "전공" },
+  { day: "WED", start: 14, end: 17, subject: "가나다라", place: "필수" },
+  { day: "FRI", start: 11, end: 14, subject: "노브랜드 버거", place: "일반" },
+  { day: "FRI", start: 16, end: 19, subject: "현장답사", place: "멀티캠퍼스" },
+];
 
-function TimeTablePage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [openPerson, setOpenPerson] = useState(null);
+const TimeTablePage = () => {
+  const [expandedSession, setExpandedSession] = useState(null);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
-
-  const renderTable = (schedule) => (
-    <div className="timetable">
-      <div className="timetable-header">
-        {days.map((day) => (
-          <div key={day} className="timetable-cell header-cell">
-            {day}
-          </div>
-        ))}
-      </div>
-      {Array.from({ length: 11 }, (_, i) => i + 10).map((hour) => (
-        <div key={hour} className="timetable-row">
-          {days.map((day) => {
-            const event = schedule.timetable.find(
-              (t) => t.day === day && t.start <= hour && t.end > hour
-            );
-            return (
-              <div key={day} className="timetable-cell">
-                {event && hour === event.start && (
-                  <div
-                    className="timetable-event"
-                    style={{
-                      gridRow: `span ${event.end - event.start}`,
-                    }}
-                  >
-                    {event.title}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
+  // ⬇️ 햄버거 메뉴 상태
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="phone-frame">
+    <div className="app-container">
       <div className="App">
+        {/* Header에 props 전달 */}
         <Headers
-          onMenuClick={toggleMenu}
-          username="김유빈"
-          isOpen={menuOpen}
-          onClose={closeMenu}
+          onMenuClick={() => setIsMenuOpen(true)}
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
         />
 
         <div className="timetable-container">
-          <h3>내 시간표</h3>
-          {renderTable(scheduleData.me)}
-
-          <div className="people-list">
-            {scheduleData.others.map((person) => (
-              <div key={person.name} className="person-block">
+          {/* 내 시간표 */}
+          <div className="my-timetable">
+            <h2>내 시간표</h2>
+            <div className="calendar">
+              {/* 요일 헤더 */}
+              <div className="header-cell" style={{ gridColumn: 1, gridRow: 1 }}></div>
+              {["SUN","MON","TUE","WED","THU","FRI","SAT"].map((day, idx) => (
                 <div
-                  className="person-summary"
-                  onClick={() =>
-                    setOpenPerson(
-                      openPerson === person.name ? null : person.name
-                    )
-                  }
+                  key={day}
+                  className="header-cell"
+                  style={{ gridColumn: idx + 2, gridRow: 1 }}
                 >
-                  {person.name}_{person.year}{" "}
-                  {person.sessions.join(" ")}
+                  {day}
                 </div>
-                {openPerson === person.name && (
-                  <div className="person-timetable">
-                    {renderTable(person)}
+              ))}
+
+              {/* 시간열 + 요일셀 */}
+              {Array.from({ length: 11 }, (_, i) => {
+                const hour = 10 + i;       // 10시~20시
+                const row = i + 2;         // 헤더 1행 포함
+                return (
+                  <React.Fragment key={hour}>
+                    <div className="time-cell" style={{ gridColumn: 1, gridRow: row }}>
+                      {hour}
+                    </div>
+                    {["SUN","MON","TUE","WED","THU","FRI","SAT"].map((day, colIdx) => (
+                      <div
+                        key={`${day}-${hour}`}
+                        className="calendar-cell"
+                        style={{ gridColumn: colIdx + 2, gridRow: row }}
+                      ></div>
+                    ))}
+                  </React.Fragment>
+                );
+              })}
+
+              {/* 수업 블록 */}
+              {mySchedule.map((cls, idx) => {
+                const col = ["SUN","MON","TUE","WED","THU","FRI","SAT"].indexOf(cls.day) + 2;
+                let rowStart = cls.start - 10 + 2;
+                let rowEnd = cls.end - 10 + 2;
+
+                if (rowEnd > 12) rowEnd = 12; // 마지막 20시 행 초과 방지
+
+                return (
+                  <div
+                    key={idx}
+                    className="class-block"
+                    style={{
+                      gridColumn: col,
+                      gridRow: `${rowStart} / ${rowEnd}`,
+                    }}
+                  >
+                    <div className="class-subject">{cls.subject}</div>
+                    <div className="class-place">{cls.place}</div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 다른 사람들 */}
+          <div className="sessions-list">
+            {sessions.map((s, idx) => (
+              <div
+                key={idx}
+                className={`session-card ${expandedSession === idx ? "expanded" : ""}`}
+                onClick={() =>
+                  setExpandedSession(expandedSession === idx ? null : idx)
+                }
+              >
+                {expandedSession === idx ? (
+                  <div className="expanded-timetable">
+                    <h3>{s.name}님의 시간표</h3>
+                    <div className="calendar small">
+                      {/* 여기에 해당 유저의 시간표 표시 */}
+                    </div>
+                    <button onClick={() => setExpandedSession(null)}>닫기</button>
+                  </div>
+                ) : (
+                  <>
+                    <span>{s.name}_{s.gen}</span>
+                    <span className="tags">{s.tags.join(" ")}</span>
+                  </>
                 )}
               </div>
             ))}
@@ -128,6 +128,6 @@ function TimeTablePage() {
       </div>
     </div>
   );
-}
+};
 
 export default TimeTablePage;

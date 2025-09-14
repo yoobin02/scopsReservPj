@@ -145,7 +145,7 @@ function ReservationPage() {
   });
 
   return (
-    <div className="phone-frame">
+    <div className="app-container">
       <div className="App">
         <Headers onMenuClick={toggleMenu} username={userName} isOpen={menuOpen} onClose={closeMenu} />
 
