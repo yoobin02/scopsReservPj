@@ -5,12 +5,14 @@ import { useState } from 'react';
 import axios from 'axios';
 
 function LoginPage() {
+ 
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+  e.preventDefault();
   if(studentId.trim() === "" || password.trim() === "")
   {
     alert("아이디와 비밀번호를 입력해주세요.")
@@ -53,26 +55,28 @@ function LoginPage() {
             <img src={`/images/scopsLogo.png`} alt="Scops Logo" />
           </div>
           <p className="slogan">SCOPS</p>
-          <input
-            type="text"
-            placeholder="학번"
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
-            className="input-box"
-          />
-          <input
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="input-box"
-          />
-          <p className="register-link" onClick={handleRegisterClick} style={{ cursor: 'pointer'}}>
+          <form onSubmit={handleLogin}>
+            <input
+              type="text"
+              placeholder="학번"
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              className="input-box"
+            />
+            <input
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-box"
+            />
+            <button type="submit" className="login-button">
+              <span style={{ color: '#876400' }}>LOGIN</span>
+            </button>
+          </form>
+          <p className="register-link" onClick={handleRegisterClick} style={{ cursor: 'pointer' }}>
             신규 부원 등록
           </p>
-          <button onClick={handleLogin} className="login-button">
-            <span style={{ color: '#876400' }}>LOGIN</span>
-          </button>
         </div>
       </div>
     </div>
