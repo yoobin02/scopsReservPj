@@ -141,3 +141,7 @@ body {
     height: 80px;
   }
 }
+.submit-button.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

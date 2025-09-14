@@ -1,26 +1,20 @@
 import './CalenderPage.css';
 import Headers from '../components/Headers';
 import '../components/Headers.css';
-import { useState } from 'react';
-
-const rangeEvents = [
-  { start: "2025-09-11", end: "2025-09-13", color: "pink", title: "합주실 단장" },
-];
-
-const dailyEvents = [
-  { date: "2025-09-05", title: "머큐리얼" },
-];
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function CalenderPage() {
   const [menuOpen, setMenuOpen] = useState(false);
-
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
+  const [reservations, setReservations] = useState([]); // 한 달치 예약 내역
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
+  // 달의 모든 날짜 구하기
   const getDaysInMonth = (year, month) => {
     const date = new Date(year, month - 1, 1);
     const days = [];
@@ -38,21 +32,26 @@ function CalenderPage() {
     calendarCells.push(null);
   }
 
-  const getDailyEvents = (date) => {
-    if (!date) return [];
-    const dateStr = date.toISOString().split("T")[0];
-    return dailyEvents.filter(event => event.date === dateStr);
-  };
+  // 한 달치 예약 불러오기
+  useEffect(() => {
+    const start = `${currentYear}-${String(currentMonth).padStart(2, "0")}-01`;
+    const endDate = new Date(currentYear, currentMonth, 0).getDate(); // 그 달 마지막 일자
+    const end = `${currentYear}-${String(currentMonth).padStart(2, "0")}-${endDate}`;
 
-  const getRangeEventsForDate = (date) => {
+    axios
+      .get(`http://localhost:8080/api/by-month?start=${start}&end=${end}`)
+      .then((res) => {
+        setReservations(res.data);
+      })
+      .catch(console.error);
+  }, [currentYear, currentMonth]);
+
+  // 특정 날짜에 해당하는 예약 가져오기
+  const getReservationsByDate = (date) => {
     if (!date) return [];
-    const dateStr = date.toISOString().split("T")[0];
-    return rangeEvents
-      .filter((event) => dateStr >= event.start && dateStr <= event.end)
-      .map((event) => ({
-        ...event,
-        showTitle: dateStr === event.start // 시작일에만 제목 표시
-      }));
+    const pad = (n) => String(n).padStart(2, "0");
+    const dateStr = `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+    return reservations.filter((r) => r.date === dateStr);
   };
 
   const prevMonth = () => {
@@ -72,56 +71,47 @@ function CalenderPage() {
       setCurrentMonth(currentMonth + 1);
     }
   };
-return (
-  <div className="app-container">
-    <div className="App">
-      <Headers
-        onMenuClick={toggleMenu}
-        username="김유빈"
-        isOpen={menuOpen}
-        onClose={closeMenu}
-      />
 
-      <div className="calendarPage-calendar-container">
-        <button className="circle-btn left-btn" onClick={prevMonth}>{"<"}</button>
-        <h2 className="month-title">{currentMonth}월</h2>
-        <button className="circle-btn right-btn" onClick={nextMonth}>{">"}</button>
+  return (
+    <div className="app-container">
+      <div className="App">
+        <Headers
+          onMenuClick={toggleMenu}
+          username="김유빈"
+          isOpen={menuOpen}
+          onClose={closeMenu}
+        />
 
-        <div className="calendarPage-calendar-grid">
-          {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
-            <div key={day} className="calendar-day-header">
-              {day}
-            </div>
-          ))}
-          {calendarCells.map((date, idx) => (
-            <div key={idx} className="calendarPage-calendar-cell">
-              {date && (
-                <>
-                  <div className="date-number">{date.getDate()}</div>
-                  {getRangeEventsForDate(date).map((event, i) => (
-                    <div
-                      key={i}
-                      className="event-bar"
-                      style={{ backgroundColor: event.color }}
-                    >
-                      {event.showTitle ? event.title : ""}
+        <div className="calendarPage-calendar-container">
+          <button className="circle-btn left-btn" onClick={prevMonth}>{"<"}</button>
+          <h2 className="month-title">{currentYear}년 {currentMonth}월</h2>
+          <button className="circle-btn right-btn" onClick={nextMonth}>{">"}</button>
+
+          <div className="calendarPage-calendar-grid">
+            {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
+              <div key={day} className="calendar-day-header">{day}</div>
+            ))}
+            {calendarCells.map((date, idx) => (
+              <div key={idx} className="calendarPage-calendar-cell">
+                {date && (
+                  <>
+                    <div className="date-number">{date.getDate()}</div>
+                    <div className="events">
+                      {getReservationsByDate(date).map((res, i) => (
+                        <div key={i} className="event-item">
+                          {`${res.songName}`}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                  <div className="events">
-                    {getDailyEvents(date).map((event, i) => (
-                      <div key={i} className="event-item">
-                        {event.title}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
+
 export default CalenderPage;

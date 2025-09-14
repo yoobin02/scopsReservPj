@@ -17,7 +17,20 @@ const UserRegisterPage = () => {
   const [userSession, setUserSession] = useState("");
   const [customSession, setCustomSession] = useState("");
 
+  const isFormValid =
+    userId.trim() !== "" &&
+    userPassword.trim() !== "" &&
+    userPasswordConfirm.trim() !== "" &&
+    userName.trim() !== "" &&
+    userYear.trim() !== "" &&
+    userSession.trim() !== "" &&
+    (userSession !== "etc" || customSession.trim() !== "");
+
   const handleUserRegister = () => {
+    if (!isFormValid) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
     if (userPassword !== userPasswordConfirm) {
       alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
       return;
@@ -119,11 +132,10 @@ const UserRegisterPage = () => {
             onChange={(e) => setUserPasswordConfirm(e.target.value)}
             className="input-box"
           />
-
           <button
             onClick={handleUserRegister}
-            style={{ cursor: 'pointer'}}
-            className="submit-button"
+            disabled={!isFormValid}
+            className={`submit-button ${isFormValid ? "" : "disabled"}`}
           >
             등 록 완 료
           </button>
