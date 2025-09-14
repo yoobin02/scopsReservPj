@@ -100,7 +100,7 @@ public class FindInfoService {
         if (dto.getSongRegisterId() != null) {
             // SongRegister 엔티티를 DB에서 조회해서 연결
             SongRegister songRegister = songRegisterRepository.findById(dto.getSongRegisterId())
-                    .orElseThrow(() -> new RuntimeException("곡 등록 정보가 없습니다. id=" + dto.getSongRegisterId()));
+                    .orElseThrow(() -> new RuntimeException("곡 등록 정보가 없습니다. id: " + dto.getSongRegisterId()));
             reservation.setSongRegister(songRegister);
         }
         reservationRepository.save(reservation);
