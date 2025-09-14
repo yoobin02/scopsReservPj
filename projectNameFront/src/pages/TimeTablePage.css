@@ -33,13 +33,13 @@
 .calendar {
   display: grid;
   grid-template-columns: 40px repeat(7, 1fr); /* 시간열 좁힘 */
-  grid-template-rows: 25px repeat(11, 40px); /* 헤더 25px + 10~20시 11행 */
+  grid-template-rows: 25px repeat(11, 40px);  /* 헤더 25px + 10~20시 11행 */
   border: 1px solid #f0e0a0;
   background: #fffef8;
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  overflow: visible;
+  overflow: hidden; /* 마지막 줄 삐져나오는 문제 방지 */
 }
 
 /* 헤더 */
