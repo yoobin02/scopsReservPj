@@ -53,13 +53,13 @@ jobs:
     - name: Run Spring Boot Application on EC2
       uses: appleboy/ssh-action@master
       with:
-      host: ${{ secrets.EC2_HOST }}
-      username: ${{ secrets.EC2_USERNAME }}
-      key: ${{ secrets.EC2_SSH_KEY }}
-      script: |
-        # systemd를 통해 myapp 서비스를 재시작합니다.
-        sudo systemctl restart myapp
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # systemd를 통해 myapp 서비스를 재시작합니다.
+          sudo systemctl restart myapp
 
-        # 서비스가 정상적으로 실행되었는지 10초 후 상태를 확인합니다.
-        sleep 10
-        sudo systemctl status myapp
+          # 서비스가 정상적으로 실행되었는지 10초 후 상태를 확인합니다.
+          sleep 10
+          sudo systemctl status myapp
