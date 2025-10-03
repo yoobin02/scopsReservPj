@@ -66,3 +66,4 @@ jobs:
           DB_USERNAME=${{ secrets.DB_USERNAME }} \
           DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
           nohup java -jar projectNameBack-0.0.1-SNAPSHOT.jar > application.log 2>&1 & # 👈 파일 이름을 직접 지정
+          echo "Deployment script finished."
