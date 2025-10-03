@@ -59,9 +59,13 @@ jobs:
         script: |
           # 기존에 실행 중이던 Java 프로세스를 종료합니다
           pkill -f 'java -jar' || true
-          
+
           cd /home/ubuntu/app/backend
-          
-          # 서버를 백그라운드에서 실행하고 로그를 남깁니다
-          # `*.jar`는 jar 파일 이름이每次 빌드마다 바뀌어도 되도록 해줍니다
+
+          # GitHub Secrets의 값들을 환경변수로 설정하여 서버를 실행합니다
+          DB_HOST=${{ secrets.DB_HOST }} \
+          DB_PORT=3306 \
+          DB_NAME=scopsdb \
+          DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
           nohup java -jar *.jar > application.log 2>&1 &
