@@ -1,57 +1,42 @@
-name: CI/CD Pipeline to AWS EC2
+name: Deploy Backend to AWS EC2
 
 on:
   push:
-    branches: [ "master" ] # master 브랜치에 푸시될 때 실행
+    branches: [ "main" ]
+    # main 브랜치의 projectNameBack 폴더에 변경이 있을 때만 실행되도록 설정
+    paths:
+      - 'projectNameBack/**'
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest # 이 워크플로우는 우분투 환경에서 실행됨
+  deploy-backend:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code # 1. 코드 체크아웃
+      # 1. GitHub 저장소의 코드를 가져옵니다
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js # 2. Node.js 환경 설정
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install Dependencies # 3. 의존성 설치
-        run: npm install
-
-      - name: Build Application # 4. 애플리케이션 빌드 (필요한 경우)
-        run: npm run build --if-present
-
-      - name: Create .env file on server # 5. 서버에 환경변수 파일 생성
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-            echo "DB_USER=${{ secrets.DB_USERNAME }}" >> .env
-            echo "DB_PASS=${{ secrets.DB_PASSWORD }}" >> .env
-            # 필요한 다른 환경변수 추가
-
-      - name: Deploy to EC2 # 6. 빌드 결과물을 EC2 서버로 전송
+      # 2. 백엔드 폴더의 모든 파일을 EC2 서버로 전송합니다
+      - name: Deploy to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "." # 현재 디렉토리의 모든 파일을 전송
-          target: "/home/ubuntu/app" # EC2 서버의 배포 디렉토리
+          source: "./projectNameBack/"  # projectNameBack 폴더의 내용물만 전송
+          target: "/home/ubuntu/app/backend" # EC2 서버의 배포 디렉토리
 
-      - name: Run Application on EC2 # 7. EC2에서 애플리케이션 실행
+      # 3. EC2 서버에 접속해서 백엔드 애플리케이션을 실행합니다 (가장 중요!)
+      - name: Run Backend Application on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/app
-            npm install --production
-            # pm2를 사용하여 애플리케이션을 중단 없이 실행/재시작
-            pm2 reload app.js || pm2 start app.js --name "my-app"
+            cd /home/ubuntu/app/backend
+            # ❗️ 여기에 백엔드 서버를 실행하는 실제 명령어를 입력해야 합니다!
+            # 예를 들어, Java라면: java -jar my-backend-app.jar
+            # Python(Flask)라면: pm2 restart my-flask-app
+            # 우선은 파일 목록만 확인하는 명령어를 넣어두겠습니다.
+            ls -al
