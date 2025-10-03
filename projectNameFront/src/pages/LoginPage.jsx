@@ -19,7 +19,7 @@ function LoginPage() {
   }
   else
   {
-    axios.post('http://localhost:8080/scops/login', {
+    axios.post('/scops/login', {
     userID: studentId,
     password: password,
   })
