@@ -5,7 +5,7 @@ name: Deploy Full Stack Application to AWS EC2
 on:
   push:
     # main 브랜치에 푸시될 때 실행됩니다. (기존 master에서 main으로 변경)
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   # ===============================================
