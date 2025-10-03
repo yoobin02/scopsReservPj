@@ -53,17 +53,13 @@ jobs:
     - name: Run Spring Boot Application on EC2
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          pkill -f 'java -jar' || true
-          cd /home/ubuntu/app/backend
-      
-          DB_HOST=${{ secrets.DB_HOST }} \
-          DB_PORT=3306 \
-          DB_NAME=scopsdb \
-          DB_USERNAME=${{ secrets.DB_USERNAME }} \
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-          nohup java -jar projectNameBack-0.0.1-SNAPSHOT.jar > application.log 2>&1 & # 👈 파일 이름을 직접 지정
-          echo "Deployment script finished."
+      host: ${{ secrets.EC2_HOST }}
+      username: ${{ secrets.EC2_USERNAME }}
+      key: ${{ secrets.EC2_SSH_KEY }}
+      script: |
+        # systemd를 통해 myapp 서비스를 재시작합니다.
+        sudo systemctl restart myapp
+
+        # 서비스가 정상적으로 실행되었는지 10초 후 상태를 확인합니다.
+        sleep 10
+        sudo systemctl status myapp
