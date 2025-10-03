@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 public class FirstController {
     private final AuthService authService;
     private final UserLoginInfoRepository userLoginInfoRepository;
