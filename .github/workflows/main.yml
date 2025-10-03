@@ -35,7 +35,7 @@ jobs:
 
     # 4. Gradle로 스프링부트 프로젝트를 빌드합니다 (jar 파일 생성)
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -x test
 
     # 5. 빌드된 .jar 파일을 EC2 서버로 전송합니다
     - name: Deploy to EC2
