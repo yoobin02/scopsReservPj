@@ -12,22 +12,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 1. EC2 서버에 rsync 설치 및 파일 동기화
-      - name: Sync project files to EC2
-        uses: appleboy/ssh-action@master
+      # 1. SSH 개인 키를 Runner에 설정
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # EC2 서버에 rsync가 설치되어 있는지 확인하고 없다면 설치합니다.
-            sudo apt-get update && sudo apt-get install -y rsync
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-            # rsync를 사용하여 GitHub Actions Runner의 현재 폴더 내용을 EC2의 app 폴더로 동기화합니다.
-            # --exclude='.git*' 옵션으로 .git 관련 파일은 제외합니다.
-            rsync -avz --delete --exclude='.git*' -e "ssh -o StrictHostKeyChecking=no" ./ ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app/
-            
-      # 2. EC2에서 Docker Compose로 배포 실행
+      # 2. rsync를 사용하여 EC2에 프로젝트 파일 동기화
+      - name: Sync project files to EC2 via rsync
+        run: |
+          rsync -avz --delete --exclude='.git*' -e "ssh -o StrictHostKeyChecking=no" \
+          ./ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/app/
+          
+      # 3. EC2에서 Docker Compose로 배포 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@master
         with:
