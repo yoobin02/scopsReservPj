@@ -12,19 +12,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 1. SSH 개인 키를 Runner에 설정
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.9.0
+      # 1. rsync-action을 사용하여 EC2에 프로젝트 파일 동기화
+      - name: Sync project files to EC2
+        uses: appleboy/rsync-action@master
         with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "./"
+          target: "/home/${{ secrets.EC2_USERNAME }}/app"
+          # SSH 접속 옵션을 직접 지정하여 인증 문제 해결
+          args: -avz --delete --exclude='.git*' -e "ssh -o StrictHostKeyChecking=no -i /tmp/ssh_key"
 
-      # 2. rsync를 사용하여 EC2에 프로젝트 파일 동기화
-      - name: Sync project files to EC2 via rsync
-        run: |
-          rsync -avz --delete --exclude='.git*' -e "ssh -o StrictHostKeyChecking=no" \
-          ./ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/app/
-          
-      # 3. EC2에서 Docker Compose로 배포 실행
+      # 2. EC2에서 Docker Compose로 배포 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@master
         with:
