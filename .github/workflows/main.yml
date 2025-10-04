@@ -25,13 +25,14 @@ jobs:
       # 백엔드 Docker 이미지 빌드 및 푸시
       - name: Build and push Backend Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-backend:latest -f ./projectNameBack/Dockerfile .
+          cd ./projectNameBack
+          docker build -t ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-backend:latest .
           docker push ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-backend:latest
 
-      # 프론트엔드 Docker 이미지 빌드 및 푸시
       - name: Build and push Frontend Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-frontend:latest -f ./projectNameFront/Dockerfile .
+          cd ./projectNameFront
+          docker build -t ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-frontend:latest .
           docker push ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-frontend:latest
 
   # ========================================================
