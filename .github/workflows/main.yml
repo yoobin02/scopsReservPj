@@ -19,9 +19,9 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./" # 현재 레포지토리의 모든 것을
-          target: "/home/${{ secrets.EC2_USERNAME }}/app" # 이 폴더에 동기화
-          flags: "-avz --delete" # 아카이브 모드, 압축, 불필요한 파일 삭제 옵션
+          source: "./" 
+          target: "/home/${{ secrets.EC2_USERNAME }}/app"
+          flags: "-avz --delete"
 
       # 2. EC2에서 Docker Compose로 배포 실행
       - name: Deploy on EC2
