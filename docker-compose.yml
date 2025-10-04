@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   backend:
-    build: ./projectNameBack
+    # build 대신 image를 사용합니다. Docker Hub ID와 이미지 이름을 적어주세요.
+    image: ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-backend:latest
     container_name: backend
     ports:
       - "8080:8080"
     environment:
-      # application.yml에서 사용할 환경변수들을 정의합니다.
       DB_HOST: ${DB_HOST}
       DB_PORT: 3306
       DB_NAME: ${DB_NAME}
@@ -16,7 +16,8 @@ services:
     restart: always
 
   frontend:
-    build: ./projectNameFront
+    # build 대신 image를 사용합니다. Docker Hub ID와 이미지 이름을 적어주세요.
+    image: ${{ secrets.DOCKERHUB_ID }}/scopsreservpj-frontend:latest
     container_name: frontend
     ports:
       - "80:80"
