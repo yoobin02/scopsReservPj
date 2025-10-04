@@ -12,7 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 1. EC2 서버에 rsync 설치 (안정성을 위해)
       - name: Install rsync on EC2
         uses: appleboy/ssh-action@master
         with:
@@ -22,9 +21,9 @@ jobs:
           script: |
             sudo apt-get update && sudo apt-get install -y rsync
 
-      # 2. 로컬 파일을 압축하고 EC2로 전송
       - name: Compress and copy project files
-        run: tar -czf project.tar.gz .
+        # 압축 파일 자기 자신을 제외하도록 --exclude 옵션 추가
+        run: tar -czf project.tar.gz --exclude='project.tar.gz' .
       - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -33,7 +32,6 @@ jobs:
           source: "project.tar.gz"
           target: "/home/${{ secrets.EC2_USERNAME }}/"
 
-      # 3. EC2에서 압축 풀고 Docker Compose로 배포 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@master
         with:
@@ -42,21 +40,18 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/${{ secrets.EC2_USERNAME }}
-            # 기존 app 폴더 삭제 및 새로 생성
             rm -rf app
             mkdir app
-            # 압축 해제
             tar -xzf project.tar.gz -C app
             
             cd app
             
-            # Docker Compose가 사용할 .env 파일 생성
             echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
             echo "DB_NAME=scopsdb" >> .env
             echo "DB_USERNAME=${{ secrets.EC2_USERNAME }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
-            # Docker Compose 실행
             docker-compose down
             docker-compose build --no-cache
             docker-compose up -d
+            docker system prune -af
