@@ -12,26 +12,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install rsync on EC2
+      # 1. EC2 서버에 rsync 설치 및 파일 동기화
+      - name: Sync project files to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # EC2 서버에 rsync가 설치되어 있는지 확인하고 없다면 설치합니다.
             sudo apt-get update && sudo apt-get install -y rsync
 
-      - name: Compress and copy project files
-        # 압축 파일 자기 자신을 제외하도록 --exclude 옵션 추가
-        run: tar -czf project.tar.gz --exclude='project.tar.gz' .
-      - uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "project.tar.gz"
-          target: "/home/${{ secrets.EC2_USERNAME }}/"
-
+            # rsync를 사용하여 GitHub Actions Runner의 현재 폴더 내용을 EC2의 app 폴더로 동기화합니다.
+            # --exclude='.git*' 옵션으로 .git 관련 파일은 제외합니다.
+            rsync -avz --delete --exclude='.git*' -e "ssh -o StrictHostKeyChecking=no" ./ ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app/
+            
+      # 2. EC2에서 Docker Compose로 배포 실행
       - name: Deploy on EC2
         uses: appleboy/ssh-action@master
         with:
@@ -39,18 +35,15 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/${{ secrets.EC2_USERNAME }}
-            rm -rf app
-            mkdir app
-            tar -xzf project.tar.gz -C app
+            cd /home/${{ secrets.EC2_USERNAME }}/app
             
-            cd app
-            
+            # Docker Compose가 사용할 .env 파일 생성
             echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
             echo "DB_NAME=scopsdb" >> .env
-            echo "DB_USERNAME=${{ secrets.EC2_USERNAME }}" >> .env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
+            # Docker Compose 실행
             docker-compose down
             docker-compose build --no-cache
             docker-compose up -d
